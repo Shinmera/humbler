@@ -24,5 +24,9 @@
                (:file "posts")
                (:file "post")
                (:file "user")
-               (:file "tagged"))
-  :depends-on (:south :yason))
+               (:file "tagged")
+               (:file "documentation"))
+  :depends-on (:south
+               :yason
+               :trivial-mimes
+               :local-time))
