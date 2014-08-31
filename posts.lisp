@@ -22,7 +22,7 @@
           () "Filter must be one of (NIL :text :raw)")
   (if reblog-info (setf reblog-info T))
   (if notes-info (setf notes-info T))
-  (request (format NIL *blog/posts* username (string-downcase type))
+  (request (format NIL *blog/posts* username (when type (string-downcase type)))
            :parameters (cons `("api_key" . ,south:*oauth-api-key*)
                              (prepare* id tag limit offset reblog-info notes-info filter))))
 
