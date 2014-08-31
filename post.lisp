@@ -11,60 +11,58 @@
 (defvar *blog/post/reblog* "https://api.tumblr.com/v2/blog/~a.tumblr.com/post/reblog")
 (defvar *blog/post/delete* "https://api.tumblr.com/v2/blog/~a.tumblr.com/post/delete")
 
+(defun post-wrapper (uri params &key video photo audio)
+  (aget
+   :id
+   (cond ((and (not video) (not photo) (not audio))
+          (request
+           uri :method :POST :oauth T
+               :parameters params))
+         ((or (stringp video) (stringp photo) (stringp audio))
+          (request
+           uri :method :POST :oauth T
+               :parameters (cons (cond (video `("embed" . ,video))
+                                       (audio `("external_url" . ,audio))
+                                       (photo `("source" . ,photo)))
+                                 params)))
+         (T
+          (data-request
+           uri :parameters params
+               :data-parameters (cond (video `(("data" . ,video)))
+                                      (audio `(("data" . ,audio)))
+                                      (photo (if (listp photo)
+                                                 (loop for image in photo
+                                                       for i from 0
+                                                       collect `(,(format NIL "data[~a]" i) . (,image :content-type ,(mimes:mime-lookup image))))
+                                                 `(("data" . (,photo :content-type ,(mimes:mime-lookup photo))))))))))))
+
 (defun blog/post-text (username body &key title (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
           () "State must be one of (:published :draft :queue :private)")
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :mardk")
-  (request (format NIL *blog/post* username)
-           :method :POST :oauth T :parameters (prepare* ("type" . "text") body title state tags tweet date format slug)))
+  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "text") body title state tags tweet date format slug)))
 
 (defun blog/post-quote (username quote &key source (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
           () "State must be one of (:published :draft :queue :private)")
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :markdown)")
-  (request (format NIL *blog/post* username)
-           :method :POST :oauth T :parameters (prepare* ("type" . "quote") quote source state tags tweet date format slug)))
+  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "quote") quote source state tags tweet date format slug)))
 
 (defun blog/post-link (username url &key description title (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
           () "State must be one of (:published :draft :queue :private)")
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :markdown)")
-  (request (format NIL *blog/post* username)
-           :method :POST :oauth T :parameters (prepare* ("type" . "link") url description title state tags tweet date format slug)))
+  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "link") url description title state tags tweet date format slug)))
 
 (defun blog/post-chat (username conversation &key title (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
           () "State must be one of (:published :draft :queue :private)")
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :markdown)")
-  (request (format NIL *blog/post* username)
-           :method :POST :oauth T :parameters (prepare* ("type" . "chat") conversation title state tags tweet date format slug)))
-
-(defun post-wrapper (uri params &key video photo audio)
-  (cond ((and (not video) (not photo) (not audio))
-         (request
-          uri :method :POST :oauth T
-              :parameters params))
-        ((or (stringp video) (stringp photo) (stringp audio))
-         (request
-          uri :method :POST :oauth T
-              :parameters (cons (cond (video `("embed" . ,video))
-                                      (audio `("external_url" . ,audio))
-                                      (photo `("source" . ,photo)))
-                                params)))
-        (T
-         (data-request
-          uri :parameters params
-              :data-parameters (cond (video `(("data" . ,video)))
-                                     (audio `(("data" . ,audio)))
-                                     (photo (if (listp photo)
-                                                (loop for image in photo
-                                                      for i from 0
-                                                      collect `(,(format NIL "data[~a]" i) . (,image :content-type ,(mimes:mime-lookup image))))
-                                                `(("data" . (,photo :content-type ,(mimes:mime-lookup photo)))))))))))
+  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "chat") conversation title state tags tweet date format slug)))
 
 (defun blog/post-photo (username photo &key caption link (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
@@ -100,9 +98,7 @@
     (post-wrapper (format NIL *blog/post/edit* username) params :photo photo :audio audio :video video)))
 
 (defun blog/post/reblog (username id reblog-key &key comment)
-  (request (format NIL *blog/post/reblog* username)
-           :method :POST :oauth T :parameters (prepare* id reblog-key comment)))
+  (post-wrapper (format NIL *blog/post/reblog* username) (prepare* id reblog-key comment)))
 
 (defun blog/post/delete (username id)
-  (request (format NIL *blog/post/delete* username)
-           :method :POST :oauth T :parameters (prepare* id)))
+  (post-wrapper (format NIL *blog/post/delete* username) (prepare* id)))

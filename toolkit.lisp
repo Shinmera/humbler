@@ -76,6 +76,9 @@ This function is DESTRUCTIVE."
                                     `(cons ,(from-keyword a) ,a)))
                             parameter-names))))
 
+(defun aget (key alist)
+  (cdr (assoc key alist)))
+
 (defvar *unix-epoch-difference*
   (encode-universal-time 0 0 0 1 1 1970 0))
 
