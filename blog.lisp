@@ -12,7 +12,7 @@
 (defvar *blog/followers* "https://api.tumblr.com/v2/blog/~a.tumblr.com/followers")
 
 (defun blog/info (username)
-  (request (format NIL *blog/info* username) :parameters `(("api_key" . ,south:*oauth-api-key*))))
+  (aget :blog (request (format NIL *blog/info* username) :parameters `(("api_key" . ,south:*oauth-api-key*)))))
 
 (defun blog/avatar (username &key (size 64) fetch)
   (assert (find size '(16 24 30 40 48 64 96 128 512))
@@ -21,18 +21,22 @@
     (declare (ignore status))
     (if fetch
         (values image (puri:render-uri uri NIL))
-        (cdr (assoc :location headers)))))
+        (aget :location headers))))
 
 (defun blog/likes (username &key (limit 20) (offset 0))
   (assert (<= 1 limit 20)
           () "Limit must be between 1 and 20 (inclusive).")
   (assert (<= 0 offset)
           () "Offset must be positive.")
-  (request (format NIL *blog/likes* username) :parameters (cons `("api_key" . ,south:*oauth-api-key*) (prepare* limit offset))))
+  (let ((data (request (format NIL *blog/likes* username) :parameters (cons `("api_key" . ,south:*oauth-api-key*) (prepare* limit offset)))))
+    (values (aget :liked-posts data)
+            (aget :liked-count data))))
 
 (defun blog/followers (username &key (limit 20) (offset 0))
   (assert (<= 1 limit 20)
           () "Limit must be between 1 and 20 (inclusive).")
   (assert (<= 0 offset)
           () "Offset must be positive.")
-  (request (format NIL *blog/followers* username) :oauth T :parameters (prepare* limit offset)))
+  (let ((data (request (format NIL *blog/followers* username) :oauth T :parameters (prepare* limit offset))))
+    (values (aget :users data)
+            (aget :total-users data))))
