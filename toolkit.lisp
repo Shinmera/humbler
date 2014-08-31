@@ -21,27 +21,39 @@ This is useful to parse the request parameters from the
 lisp representation into the api representation."
   (cl-ppcre:regex-replace-all "-" (string-downcase keyword) "_"))
 
-(defun raw-request (url &key (method :get) parameters oauth (redirect 10))
-  (if oauth
-      (south:signed-request url :parameters parameters :method method :drakma-params `(:redirect ,redirect))
-      (let ((drakma:*text-content-types* (cons '("application" . "json")
-                                               (cons '("text" . "json")
-                                                     (cons '("application" . "x-www-form-urlencoded")
-                                                           drakma:*text-content-types*)))))
+(defun raw-request (url &key (method :get) parameters oauth (redirect 10) &allow-other-keys)
+  (let ((drakma:*text-content-types* (cons '("application" . "json")
+                                           (cons '("text" . "json")
+                                                 drakma:*text-content-types*))))
+    (if oauth
+        (south:signed-request url :parameters parameters :method method :drakma-params `(:redirect ,redirect))
         (drakma:http-request url :method method :parameters parameters :redirect redirect))))
 
-(defun request (url &key (method :get) parameters oauth (redirect 10))
-  (let ((data (multiple-value-list (raw-request url :method method :parameters parameters :oauth oauth :redirect redirect))))
+(defun raw-data-request (url &key parameters data-parameters (redirect 10) &allow-other-keys)
+  (let ((drakma:*text-content-types* (cons '("application" . "json")
+                                           (cons '("text" . "json")
+                                                 drakma:*text-content-types*))))
+    (south:signed-data-parameters-request url :data-parameters data-parameters :parameters parameters :drakma-params `(:redirect ,redirect))))
+
+(defun request (url &rest args &key (method :get) parameters oauth (redirect 10) (request-fun #'raw-request) &allow-other-keys)
+  (declare (ignore method parameters oauth redirect))
+  (let ((data (multiple-value-list (apply request-fun url args))))
     (destructuring-bind (body status headers &rest dont-care) data
       (declare (ignore dont-care))
-      (when (>= status 400)
-        (error "Error during request: ~s" data))
-      (let ((content-type (cdr (assoc :content-type headers))))
-        (cond
-          ((search "json" content-type)
-           (values-list (cons (cdr (assoc :response (yason:parse body :object-as :alist :object-key-fn #'to-keyword)))
-                              (cdr data))))
-          (T (values-list data)))))))
+      (let ((data
+              (let ((content-type (cdr (assoc :content-type headers))))
+                (cond
+                  ((search "json" content-type)
+                   (cons (cdr (assoc :response (yason:parse body :object-as :alist :object-key-fn #'to-keyword)))
+                         (cdr data)))
+                  (T data)))))
+        (unless (< status 400)
+          (error "Error during request: ~s" data))
+        (values-list data)))))
+
+(defun data-request (url &rest args &key parameters data-parameters (redirect 10))
+  (declare (ignore parameters redirect data-parameters))
+  (apply #'request url :request-fun #'raw-data-request args))
 
 (defun prepare (parameters)
   "Filters out empty key-value pairs and turns all values
@@ -52,6 +64,7 @@ This function is DESTRUCTIVE."
             (setf (cdr pair) (typecase (cdr pair)
                                (string (cdr pair))
                                (boolean "true")
+                               (keyword (string-downcase (cdr pair)))
                                (t (princ-to-string (cdr pair))))))
         (delete () parameters :key #'cdr)))
 
