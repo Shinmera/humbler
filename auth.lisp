@@ -13,3 +13,7 @@
 
 (defun login (&optional callback-url)
   (south:initiate-authentication :method (or callback-url :server)))
+
+(defun logout ()
+  (setf south:*oauth-access-token* NIL
+        south:*oauth-access-secret* NIL))

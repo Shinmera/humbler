@@ -9,7 +9,8 @@
   (:use #:cl)
   ;; auth.lisp
   (:export
-   #:login)
+   #:login
+   #:logout)
   ;; blog.lisp
   (:export
    #:blog/info
