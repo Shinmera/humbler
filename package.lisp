@@ -4,13 +4,8 @@
  Author: Nicolas Hafner <shinmera@tymoon.eu>
 |#
 
-(defpackage #:humbler
-  (:nicknames #:org.tymoonnext.humbler)
-  (:use #:cl)
-  ;; auth.lisp
-  (:export
-   #:login
-   #:logout)
+(defpackage #:humbler-api
+  (:nicknames #:org.tymoonnext.humbler.api)
   ;; blog.lisp
   (:export
    #:blog/info
@@ -38,15 +33,6 @@
   ;; tagged.lisp
   (:export
    #:tagged)
-  ;; toolkit.lisp
-  (:export
-   #:to-keyword
-   #:from-keyword
-   #:raw-request
-   #:request
-   #:prepare
-   #:prepare*
-   #:get-unix-time)
   ;; user.lisp
   (:export
    #:user/info
@@ -57,3 +43,40 @@
    #:user/unfollow
    #:user/like
    #:user/unlike))
+
+(defpackage #:humbler-objects
+  (:nicknames #:org.tymoonnext.humbler.objects)
+  ;;
+  (:export)
+  )
+
+(defpackage #:humbler-extra
+  (:nicknames #:org.tymoonnext.humbler.extra)
+  ;; auth.lisp
+  (:export
+   #:login
+   #:logout)
+  ;; toolkit.lisp
+  (:export
+   #:to-keyword
+   #:from-keyword
+   #:raw-request
+   #:request
+   #:prepare
+   #:prepare*
+   #:get-unix-time))
+
+(defpackage #:humbler
+  (:nicknames #:org.tymoonnext.humbler)
+  (:use #:cl
+        #:humbler-api
+        #:humbler-objects
+        #:humbler-extra))
+
+;; Export everything from sub-packages
+(do-external-symbols (symb '#:HUMBLER-OBJECTS)
+  (export symb '#:HUMBLER))
+(do-external-symbols (symb '#:HUMBLER-API)
+  (export symb '#:HUMBLER))
+(do-external-symbols (symb '#:HUMBLER-EXTRA)
+  (export symb '#:HUMBLER))
