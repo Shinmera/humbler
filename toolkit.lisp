@@ -84,3 +84,10 @@ This function is DESTRUCTIVE."
 
 (defun get-unix-time ()
   (- (get-universal-time) *unix-epoch-difference*))
+
+(defparameter *tumblr-datetime-format* '((:year 4) "-" (:month 2) "-" (:day 2) " " (:hour 2) ":" (:min 2) ":" (:sec 2) " GMT"))
+
+(defun format-tumblr-time (timestamp)
+  (local-time:format-timestring
+   NIL (local-time:adjust-timestamp timestamp (offset :sec (- (nth-value 9 (local-time:decode-timestamp timestamp)))))
+   :format *tumblr-datetime-format*))
