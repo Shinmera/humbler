@@ -11,6 +11,17 @@
 (defvar *blog/post/reblog* "https://api.tumblr.com/v2/blog/~a.tumblr.com/post/reblog")
 (defvar *blog/post/delete* "https://api.tumblr.com/v2/blog/~a.tumblr.com/post/delete")
 
+;; Evil macro, but it's only used in this controlled env, so I don't care to make it nice.
+(defun %post-fun-header ()
+  `(progn
+     (assert (find state '(:published :draft :queue :private))
+             () "State must be one of (:published :draft :queue :private)")
+     (assert (find format '(:html :markdown))
+             () "Format must be one of (:html :markdown)")
+     (assert (or (stringp tweet) (eql tweet :off) (eql tweet NIL)))
+     (if (listp tags) (setf tags (format NIL "~{~a~^,~}" tags)))
+     (if (typep date 'local-time:timestamp) (setf date (format-tumblr-time date)))))
+
 (defun post-wrapper (uri params &key video photo audio)
   (aget
    :id
@@ -37,63 +48,39 @@
                                                  `(("data" . (,photo :content-type ,(mimes:mime-lookup photo))))))))))))
 
 (defun blog/post-text (username body &key title (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :mardk")
+  (%post-fun-header)
   (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "text") body title state tags tweet date format slug)))
 
 (defun blog/post-quote (username quote &key source (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :markdown)")
+  (%post-fun-header)
   (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "quote") quote source state tags tweet date format slug)))
 
 (defun blog/post-link (username url &key description title (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :markdown)")
+  (%post-fun-header)
   (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "link") url description title state tags tweet date format slug)))
 
 (defun blog/post-chat (username conversation &key title (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :markdown)")
+  (%post-fun-header)
   (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "chat") conversation title state tags tweet date format slug)))
 
 (defun blog/post-photo (username photo &key caption link (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :markdown)")
+  (%post-fun-header)
   (let ((params (prepare* ("type" . "photo") caption link state tags tweet date format slug)))
     (post-wrapper (format NIL *blog/post* username) params :photo photo)))
 
 (defun blog/post-audio (username audio &key caption (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :markdown)")
+  (%post-fun-header)
   (let ((params (prepare* ("type" . "audio") caption state tags tweet date format slug)))
     (post-wrapper (format NIL *blog/post* username) params :audio audio)))
 
 (defun blog/post-video (username video &key caption (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :markdown)")
+  (%post-fun-header)
   (let ((params (prepare* ("type" . "video") caption state tags tweet date format slug)))
     (post-wrapper (format NIL *blog/post* username) params :video video)))
 
 (defun blog/post/edit (username id &key photo audio video body quote url conversation caption description
                                      source link title (state :published) tags tweet date (format :html) slug)
-  (assert (find state '(:published :draft :queue :private))
-          () "State must be one of (:published :draft :queue :private)")
-  (assert (find format '(:html :markdown))
-          () "Format must be one of (:html :markdown)")
+  (%post-fun-header)
   (let ((params (prepare* id body quote url conversation caption description source link title state tags tweet date format slug)))
     (post-wrapper (format NIL *blog/post/edit* username) params :photo photo :audio audio :video video)))
 
