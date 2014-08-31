@@ -47,45 +47,45 @@
                                                        collect `(,(format NIL "data[~a]" i) . (,image :content-type ,(mimes:mime-lookup image))))
                                                  `(("data" . (,photo :content-type ,(mimes:mime-lookup photo))))))))))))
 
-(defun blog/post-text (username body &key title (state :published) tags tweet date (format :html) slug)
+(defun blog/post-text (blog body &key title (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
-  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "text") body title state tags tweet date format slug)))
+  (post-wrapper (format NIL *blog/post* blog) (prepare* ("type" . "text") body title state tags tweet date format slug)))
 
-(defun blog/post-quote (username quote &key source (state :published) tags tweet date (format :html) slug)
+(defun blog/post-quote (blog quote &key source (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
-  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "quote") quote source state tags tweet date format slug)))
+  (post-wrapper (format NIL *blog/post* blog) (prepare* ("type" . "quote") quote source state tags tweet date format slug)))
 
-(defun blog/post-link (username url &key description title (state :published) tags tweet date (format :html) slug)
+(defun blog/post-link (blog url &key description title (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
-  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "link") url description title state tags tweet date format slug)))
+  (post-wrapper (format NIL *blog/post* blog) (prepare* ("type" . "link") url description title state tags tweet date format slug)))
 
-(defun blog/post-chat (username conversation &key title (state :published) tags tweet date (format :html) slug)
+(defun blog/post-chat (blog conversation &key title (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
-  (post-wrapper (format NIL *blog/post* username) (prepare* ("type" . "chat") conversation title state tags tweet date format slug)))
+  (post-wrapper (format NIL *blog/post* blog) (prepare* ("type" . "chat") conversation title state tags tweet date format slug)))
 
-(defun blog/post-photo (username photo &key caption link (state :published) tags tweet date (format :html) slug)
+(defun blog/post-photo (blog photo &key caption link (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
   (let ((params (prepare* ("type" . "photo") caption link state tags tweet date format slug)))
-    (post-wrapper (format NIL *blog/post* username) params :photo photo)))
+    (post-wrapper (format NIL *blog/post* blog) params :photo photo)))
 
-(defun blog/post-audio (username audio &key caption (state :published) tags tweet date (format :html) slug)
+(defun blog/post-audio (blog audio &key caption (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
   (let ((params (prepare* ("type" . "audio") caption state tags tweet date format slug)))
-    (post-wrapper (format NIL *blog/post* username) params :audio audio)))
+    (post-wrapper (format NIL *blog/post* blog) params :audio audio)))
 
-(defun blog/post-video (username video &key caption (state :published) tags tweet date (format :html) slug)
+(defun blog/post-video (blog video &key caption (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
   (let ((params (prepare* ("type" . "video") caption state tags tweet date format slug)))
-    (post-wrapper (format NIL *blog/post* username) params :video video)))
+    (post-wrapper (format NIL *blog/post* blog) params :video video)))
 
-(defun blog/post/edit (username id &key photo audio video body quote url conversation caption description
+(defun blog/post/edit (blog id &key photo audio video body quote url conversation caption description
                                      source link title (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
   (let ((params (prepare* id body quote url conversation caption description source link title state tags tweet date format slug)))
-    (post-wrapper (format NIL *blog/post/edit* username) params :photo photo :audio audio :video video)))
+    (post-wrapper (format NIL *blog/post/edit* blog) params :photo photo :audio audio :video video)))
 
-(defun blog/post/reblog (username id reblog-key &key comment)
-  (post-wrapper (format NIL *blog/post/reblog* username) (prepare* id reblog-key comment)))
+(defun blog/post/reblog (blog id reblog-key &key comment)
+  (post-wrapper (format NIL *blog/post/reblog* blog) (prepare* id reblog-key comment)))
 
-(defun blog/post/delete (username id)
-  (post-wrapper (format NIL *blog/post/delete* username) (prepare* id)))
+(defun blog/post/delete (blog id)
+  (post-wrapper (format NIL *blog/post/delete* blog) (prepare* id)))

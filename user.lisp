@@ -50,12 +50,12 @@
     (values (aget :blogs data)
             (aget :total-blogs data)))))
 
-(defun user/follow (username)
-  (or (request *user/follow* :method :POST :oauth T :parameters `(("url" . ,(format NIL "~a.tumblr.com" username))))
+(defun user/follow (blog)
+  (or (request *user/follow* :method :POST :oauth T :parameters `(("url" . ,(format NIL "~a.tumblr.com" blog))))
       T))
 
-(defun user/unfollow (username)
-  (or (request *user/unfollow* :method :POST :oauth T :parameters `(("url" . ,(format NIL "~a.tumblr.com" username))))
+(defun user/unfollow (blog)
+  (or (request *user/unfollow* :method :POST :oauth T :parameters `(("url" . ,(format NIL "~a.tumblr.com" blog))))
       T))
 
 (defun user/like (id reblog-key)
