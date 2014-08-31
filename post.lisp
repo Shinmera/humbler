@@ -43,14 +43,28 @@
   (request (format NIL *blog/post* username)
            :method :POST :oauth T :parameters (prepare* ("type" . "chat") conversation title state tags tweet date format slug)))
 
-;; bad macro but I don't care to gensym and once-only this, since I know the uses are safe.
-(defmacro %photo-push (photo params)
-  `(flet ((add (photo)
-            (etypecase photo
-              (string (push `("source[]" . ,photo) ,params))
-              (pathname (push `("data[]" . (,photo)) ,params))
-              (array (push `("data[]" . ,photo) ,params)))))
-     (if (listp ,photo) (mapc #'add ,photo) (add ,photo))))
+(defun post-wrapper (uri params &key video photo audio)
+  (cond ((and (not video) (not photo) (not audio))
+         (request
+          uri :method :POST :oauth T
+              :parameters params))
+        ((or (stringp video) (stringp photo) (stringp audio))
+         (request
+          uri :method :POST :oauth T
+              :parameters (cons (cond (video `("embed" . ,video))
+                                      (audio `("external_url" . ,audio))
+                                      (photo `("source" . ,photo)))
+                                params)))
+        (T
+         (data-request
+          uri :parameters params
+              :data-parameters (cond (video `(("data" . ,video)))
+                                     (audio `(("data" . ,audio)))
+                                     (photo (if (listp photo)
+                                                (loop for image in photo
+                                                      for i from 0
+                                                      collect `(,(format NIL "data[~a]" i) . (,image :content-type ,(mimes:mime-lookup image))))
+                                                `(("data" . (,photo :content-type ,(mimes:mime-lookup photo)))))))))))
 
 (defun blog/post-photo (username photo &key caption link (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
@@ -58,15 +72,7 @@
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :markdown)")
   (let ((params (prepare* ("type" . "photo") caption link state tags tweet date format slug)))
-    (%photo-push photo params)
-    (request (format NIL *blog/post* username)
-             :method :POST :oauth T :parameters params)))
-
-(defun %audio (audio)
-  (etypecase audio
-    (string `("external_url" . ,audio))
-    (pathname `("data" . (,audio)))
-    (array `("data" . ,audio))))
+    (post-wrapper (format NIL *blog/post* username) params :photo photo)))
 
 (defun blog/post-audio (username audio &key caption (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
@@ -74,15 +80,7 @@
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :markdown)")
   (let ((params (prepare* ("type" . "audio") caption state tags tweet date format slug)))
-    (push (%audio audio) params)
-    (request (format NIL *blog/post* username)
-             :method :POST :oauth T :parameters params)))
-
-(defun %video (video)
-  (etypecase video
-    (string `("embed" . ,video))
-    (pathname `("data" . (,video)))
-    (array `("data" . ,video))))
+    (post-wrapper (format NIL *blog/post* username) params :audio audio)))
 
 (defun blog/post-video (username video &key caption (state :published) tags tweet date (format :html) slug)
   (assert (find state '(:published :draft :queue :private))
@@ -90,9 +88,7 @@
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :markdown)")
   (let ((params (prepare* ("type" . "video") caption state tags tweet date format slug)))
-    (push (%video video) params)
-    (request (format NIL *blog/post* username)
-             :method :POST :oauth T :parameters params)))
+    (post-wrapper (format NIL *blog/post* username) params :video video)))
 
 (defun blog/post/edit (username id &key photo audio video body quote url conversation caption description
                                      source link title (state :published) tags tweet date (format :html) slug)
@@ -101,11 +97,7 @@
   (assert (find format '(:html :markdown))
           () "Format must be one of (:html :markdown)")
   (let ((params (prepare* id body quote url conversation caption description source link title state tags tweet date format slug)))
-    (when photo (%photo-push photo params))
-    (when video (push (%video video) params))
-    (when audio (push (%audio audio) params))
-    (request (format NIL *blog/post/edit* username)
-             :method :POST :oauth T :parameters params)))
+    (post-wrapper (format NIL *blog/post/edit* username) params :photo photo :audio audio :video video)))
 
 (defun blog/post/reblog (username id reblog-key &key comment)
   (request (format NIL *blog/post/reblog* username)
