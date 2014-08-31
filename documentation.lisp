@@ -100,7 +100,7 @@ LINK       --- string
       (post-docstring
        "audio"
        "~
-AUDIO      --- string | pathname | octet-array
+AUDIO      ::= string | pathname | octet-array
                If a string, it should be an external URL that hosts the file.
                Otherwise a pathname/octet-array of an MP3 file."
        "~
@@ -111,7 +111,7 @@ CAPTION    --- string
       (post-docstring
        "video"
        "~
-VIDEO      --- string | pathname | octet-array
+VIDEO      ::= string | pathname | octet-array
                If a string, it should be the HTML embed-code for the video.
                Otherwise a pathname/octet-array of an MP4 video with AAC audio encoding."
        "~
