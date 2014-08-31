@@ -8,7 +8,7 @@
 
 (defvar *tagged* "https://api.tumblr.com/v2/tagged")
 
-(defun tagged (tag &key (before (get-unix-time)) (limit 20) filter)
+(defun tagged (tag &key before (limit 20) filter)
   (assert (<= 1 limit 20)
           () "Limit must be between 1 and 20 (inclusive).")
   (assert (member filter '(NIL :text :raw))
