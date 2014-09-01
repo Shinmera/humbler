@@ -19,12 +19,15 @@
   :serial T
   :components ((:file "package")
                (:file "toolkit")
-               (:file "auth")
                (:file "blog")
                (:file "posts")
                (:file "post")
                (:file "user")
                (:file "tagged")
+               (:file "objects")
+               (:file "generics")
+               (:file "deferring")
+               (:file "auth")
                (:file "documentation"))
   :depends-on (:south
                :yason
