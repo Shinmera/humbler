@@ -48,7 +48,7 @@
           () "Offset must be positive.")
   (let ((data (request *user/following* :oauth T :parameters (prepare* limit offset))))
     (values (aget :blogs data)
-            (aget :total-blogs data)))))
+            (aget :total-blogs data))))
 
 (defun user/follow (blog)
   (or (request *user/follow* :method :POST :oauth T :parameters `(("url" . ,(format NIL "~a.tumblr.com" blog))))
