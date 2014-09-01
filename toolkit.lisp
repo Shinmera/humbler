@@ -76,8 +76,11 @@ This function is DESTRUCTIVE."
                                     `(cons ,(from-keyword a) ,a)))
                             parameter-names))))
 
-(defun aget (key alist)
-  (cdr (assoc key alist)))
+(defun aget (key alist &optional default)
+  (let ((cons (assoc key alist)))
+    (if cons
+        (cdr cons)
+        default)))
 
 (defvar *unix-epoch-difference*
   (encode-universal-time 0 0 0 1 1 1970 0))
@@ -87,10 +90,18 @@ This function is DESTRUCTIVE."
 
 (defparameter *tumblr-datetime-format* '((:year 4) "-" (:month 2) "-" (:day 2) " " (:hour 2) ":" (:min 2) ":" (:sec 2) " GMT"))
 
-(defun format-tumblr-time (timestamp)
+(defun format-tumblr-date (timestamp)
   (local-time:format-timestring
    NIL (local-time:adjust-timestamp timestamp (offset :sec (- (nth-value 9 (local-time:decode-timestamp timestamp)))))
    :format *tumblr-datetime-format*))
+
+(defun parse-tumblr-date (datestring)
+  (or (cl-ppcre:register-groups-bind (year month day hour min sec) ("(\\d+)-(\\d+)-(\\d+) (\\d+):(\\d+):(\\d+)" datestring)
+        (local-time:encode-timestamp
+         0 (parse-integer (or sec "")) (parse-integer (or min "")) (parse-integer (or hour ""))
+         (parse-integer (or day "")) (parse-integer (or month "")) (parse-integer (or year ""))
+         :timezone local-time:+gmt-zone+))
+      datestring))
 
 (defun pageinate (function offset amount &rest args)
   (flet ((call (offset amount)

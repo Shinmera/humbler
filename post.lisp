@@ -20,7 +20,7 @@
              () "Format must be one of (:html :markdown)")
      (assert (or (stringp tweet) (eql tweet :off) (eql tweet NIL)))
      (if (listp tags) (setf tags (format NIL "~{~a~^,~}" tags)))
-     (if (typep date 'local-time:timestamp) (setf date (format-tumblr-time date)))))
+     (if (typep date 'local-time:timestamp) (setf date (format-tumblr-date date)))))
 
 (defun post-wrapper (uri params &key video photo audio)
   (aget
