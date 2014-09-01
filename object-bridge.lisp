@@ -38,7 +38,7 @@
           do (destructuring-bind (field &optional (get #'(lambda (result)
                                                            (saget result field))))
                  (if (listp fielddef) fielddef (list fielddef))
-               (let ((val (funcall get result field)))
+               (let ((val (funcall get result)))
                  (unless (eq val 'undefined)
                    (setf (slot-value instance (find-symbol (string field) "HUMBLER"))
                          val)))))
@@ -48,7 +48,11 @@
   #'(lambda (result) (funcall fun result field)))
 
 (defun field-iterator (field function)
-  #'(lambda (result) (mapcar function (saget result field))))
+  #'(lambda (result)
+      (let ((value (saget result field)))
+        (if (eq value 'undefined)
+            'undefined
+            (mapcar function value)))))
 
 (defun map-field (to from &optional (fun #'saget))
   (list to (field-getter from fun)))
