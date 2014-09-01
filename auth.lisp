@@ -6,13 +6,21 @@
 
 (in-package #:org.tymoonnext.humbler)
 
+(defvar *user*)
+
 (south:prepare
  :oauth/request-token "http://www.tumblr.com/oauth/request_token"
  :oauth/authorize "http://www.tumblr.com/oauth/authorize"
  :oauth/access-token "http://www.tumblr.com/oauth/access_token")
 
-(defun login (&optional callback-url)
-  (south:initiate-authentication :method (or callback-url :server)))
+(defun init-user ()
+  (setf *user* (myself)))
+
+(setf south:*authentication-callback*
+      #'(lambda (&rest a) (declare (ignore a)) (init-user)))
+
+(defun login ()
+  (south:initiate-authentication :method :server))
 
 (defun logout ()
   (setf south:*oauth-access-token* NIL
