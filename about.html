@@ -851,7 +851,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing an answer post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:AUDIO-POST"/>
@@ -864,7 +864,11 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing an audio post.
+
+In order to change or upload audio files, please use the FILE slot.
+Acceptable are a string (representing the URL to a music track),
+a pathname or an octet vector. The file format has to be MP3.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:BLOG"/>
@@ -877,7 +881,14 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a blog.
+
+This is not equivalent to a user. Each user is necessarily also a blog,
+but not every blog is a user. One user may have access to multiple blogs.
+Pure blogs can't follow or like anything or do any of the real-user
+related things, but since most of the user settings are not actually
+accessible through the API, the difference in slots between blogs and
+users is minimal.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:CHAT-POST"/>
@@ -890,7 +901,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a chat post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:DIALOGUE"/>
@@ -903,7 +914,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a dialogue entry in a chat-post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:LINK-POST"/>
@@ -916,7 +927,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a link post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:PHOTO"/>
@@ -929,7 +940,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a photo in a photo/set post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:PHOTO-POST"/>
@@ -942,7 +953,11 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a photo/set post.
+
+In order to change or upload photos, please use the FILE slot.
+Acceptable are a single string (representing the URL to a photo),
+a pathname, an octet vector or a list of pathnames or octet vectors.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:PHOTO-SIZE"/>
@@ -955,7 +970,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a photo-size of a photo.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:POST"/>
@@ -968,7 +983,12 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Superclass for posts. Should not be used directly.
+
+Every type of post has a lot of fields in common with every other, this
+class defines these common fields. Note that some fields, such as
+TWEET, SLUG and POST-FORMAT are only used for creating or editing posts
+and are never actually returned by the API.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:QUOTE-POST"/>
@@ -981,7 +1001,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a quote post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:TEXT-POST"/>
@@ -994,7 +1014,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a text post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:USER"/>
@@ -1007,7 +1027,9 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a user.
+
+Every user is also a blog. See the BLOG class.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:VIDEO-PLAYER"/>
@@ -1020,7 +1042,7 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a video player object in a video-post.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:VIDEO-POST"/>
@@ -1033,7 +1055,12 @@ Returns T on success.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre></pre>
+                  <pre>Class representing a video post.
+
+In order to change or upload video files, please use the FILE slot.
+Acceptable are a string (being the HTML embedding code for the video),
+a pathname or an octet vector. The file format has to be MP4 with
+audio encoded in AAC.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:MAKE-BLOG"/>
@@ -2446,7 +2473,7 @@ Returns the post object on success, signals an error on failure.</pre>
                       <span>(TIMESTAMP)</span>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Returns a string version of the local-time timestamp using the proper timezone and format.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:FROM-KEYWORD"/>
@@ -2475,7 +2502,7 @@ lisp representation into the api representation.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Returns an integer representing the seconds since the unix epoch.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:LOGIN"/>
@@ -2488,7 +2515,7 @@ lisp representation into the api representation.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Performs a SERVER login with South.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:LOGOUT"/>
@@ -2501,7 +2528,7 @@ lisp representation into the api representation.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Resets South's access tokens, thus logging you out.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:PAGEINATE"/>
@@ -2514,7 +2541,10 @@ lisp representation into the api representation.</pre>
                       <span>(FUNCTION OFFSET AMOUNT &amp;REST ARGS)</span>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Gather results from FUNCTION until AMOUNT is gathered.
+The function needs to accept both OFFSET and AMOUNT keywords.
+As per default for tumblr calls, the objects are gathered in
+steps of twenty.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:PARSE-TUMBLR-DATE"/>
@@ -2527,7 +2557,8 @@ lisp representation into the api representation.</pre>
                       <span>(DATESTRING)</span>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Parses a tumblr datestring (2014-08-01 23:52:31 GMT) into a local-time timestamp.
+If it fails to parse, the datestring is returned instead.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:PREPARE"/>
@@ -2555,7 +2586,7 @@ This function is DESTRUCTIVE.</pre>
                       <span>(OBJECT)</span>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Prints all slots of the object and their values.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:RAW-REQUEST"/>
@@ -2568,7 +2599,13 @@ This function is DESTRUCTIVE.</pre>
                       <span>(URL &amp;KEY (METHOD GET) PARAMETERS OAUTH (REDIRECT 10) &amp;ALLOW-OTHER-KEYS)</span>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Performs a raw request, with JSON as text.
+
+URL         --- Url to request, see DRAKMA:HTTP-REQUEST
+METHOD      --- Request method, see DRAKMA:HTTP-REQUEST
+PARAMETERS  --- List of parameters, see DRAKMA:HTTP-REQUEST
+OAUTH       --- Whether to use oAuth signinf or not if T, will use SOUTH:SIGNED-REQUEST.
+REDIRECT    --- How many redirects to allow, see DRAKMA:HTTP-REQUEST</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:REQUEST"/>
@@ -2582,7 +2619,7 @@ This function is DESTRUCTIVE.</pre>
      (REQUEST-FUN #'RAW-REQUEST) &amp;ALLOW-OTHER-KEYS)</span>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Wrapper around RAW-REQUEST, automatically parsing the JSON or producing a nice error on failure.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:TO-KEYWORD"/>
@@ -2624,7 +2661,7 @@ responses into an alist.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Local-time format to produce tumblr's datetime format.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-EXTRA:*USER*"/>
@@ -2637,7 +2674,7 @@ responses into an alist.</pre>
                       <span/>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>The central user object storing a reference to whoever is currently logged in.</pre>
                 </article>
               </li></ul>
           </li></ul>

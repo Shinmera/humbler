@@ -22,6 +22,13 @@ lisp representation into the api representation."
   (cl-ppcre:regex-replace-all "-" (string-downcase keyword) "_"))
 
 (defun raw-request (url &key (method :get) parameters oauth (redirect 10) &allow-other-keys)
+  "Performs a raw request, with JSON as text.
+
+URL         --- Url to request, see DRAKMA:HTTP-REQUEST
+METHOD      --- Request method, see DRAKMA:HTTP-REQUEST
+PARAMETERS  --- List of parameters, see DRAKMA:HTTP-REQUEST
+OAUTH       --- Whether to use oAuth signinf or not if T, will use SOUTH:SIGNED-REQUEST.
+REDIRECT    --- How many redirects to allow, see DRAKMA:HTTP-REQUEST"
   (let ((drakma:*text-content-types* (cons '("application" . "json")
                                            (cons '("text" . "json")
                                                  drakma:*text-content-types*))))
@@ -30,12 +37,14 @@ lisp representation into the api representation."
         (drakma:http-request url :method method :parameters parameters :redirect redirect))))
 
 (defun raw-data-request (url &key parameters data-parameters (redirect 10) &allow-other-keys)
+  "Same as RAW-REQUEST, except always uses SOUTH:SIGNED-DATA-PARAMETERS-REQUEST."
   (let ((drakma:*text-content-types* (cons '("application" . "json")
                                            (cons '("text" . "json")
                                                  drakma:*text-content-types*))))
     (south:signed-data-parameters-request url :data-parameters data-parameters :parameters parameters :drakma-params `(:redirect ,redirect))))
 
 (defun request (url &rest args &key (method :get) parameters oauth (redirect 10) (request-fun #'raw-request) &allow-other-keys)
+  "Wrapper around RAW-REQUEST, automatically parsing the JSON or producing a nice error on failure."
   (declare (ignore method parameters oauth redirect))
   (let ((data (multiple-value-list (apply request-fun url args))))
     (destructuring-bind (body status headers &rest dont-care) data
@@ -52,6 +61,7 @@ lisp representation into the api representation."
         (values-list data)))))
 
 (defun data-request (url &rest args &key parameters data-parameters (redirect 10))
+  "Same as REQUEST, except using RAW-DATA-REQUEST in the back."
   (declare (ignore parameters redirect data-parameters))
   (apply #'request url :request-fun #'raw-data-request args))
 
@@ -86,16 +96,21 @@ This function is DESTRUCTIVE."
   (encode-universal-time 0 0 0 1 1 1970 0))
 
 (defun get-unix-time ()
+  "Returns an integer representing the seconds since the unix epoch."
   (- (get-universal-time) *unix-epoch-difference*))
 
-(defparameter *tumblr-datetime-format* '((:year 4) "-" (:month 2) "-" (:day 2) " " (:hour 2) ":" (:min 2) ":" (:sec 2) " GMT"))
+(defparameter *tumblr-datetime-format* '((:year 4) "-" (:month 2) "-" (:day 2) " " (:hour 2) ":" (:min 2) ":" (:sec 2) " GMT")
+  "Local-time format to produce tumblr's datetime format.")
 
 (defun format-tumblr-date (timestamp)
+  "Returns a string version of the local-time timestamp using the proper timezone and format."
   (local-time:format-timestring
    NIL (local-time:adjust-timestamp timestamp (offset :sec (- (nth-value 9 (local-time:decode-timestamp timestamp)))))
    :format *tumblr-datetime-format*))
 
 (defun parse-tumblr-date (datestring)
+  "Parses a tumblr datestring (2014-08-01 23:52:31 GMT) into a local-time timestamp.
+If it fails to parse, the datestring is returned instead."
   (or (cl-ppcre:register-groups-bind (year month day hour min sec) ("(\\d+)-(\\d+)-(\\d+) (\\d+):(\\d+):(\\d+)" datestring)
         (local-time:encode-timestamp
          0 (parse-integer (or sec "")) (parse-integer (or min "")) (parse-integer (or hour ""))
@@ -104,6 +119,10 @@ This function is DESTRUCTIVE."
       datestring))
 
 (defun pageinate (function offset amount &rest args)
+  "Gather results from FUNCTION until AMOUNT is gathered.
+The function needs to accept both OFFSET and AMOUNT keywords.
+As per default for tumblr calls, the objects are gathered in
+steps of twenty."
   (flet ((call (offset amount)
            (apply function :offset offset :amount amount args)))
     (if (<= amount 20)
@@ -117,6 +136,7 @@ This function is DESTRUCTIVE."
               nconcing current-set))))
 
 (defun print-slots (object)
+  "Prints all slots of the object and their values."
   (loop for slotdef in (c2mop:class-slots (class-of object))
         for slot = (c2mop:slot-definition-name slotdef)
         do (format T "~a: ~:[UNBOUND~;~:*~s~]~%"

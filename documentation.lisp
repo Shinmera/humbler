@@ -449,49 +449,76 @@ Returns T on success.")
 ;;;
 
 (docc blog
-      "")
+      "Class representing a blog.
+
+This is not equivalent to a user. Each user is necessarily also a blog,
+but not every blog is a user. One user may have access to multiple blogs.
+Pure blogs can't follow or like anything or do any of the real-user
+related things, but since most of the user settings are not actually
+accessible through the API, the difference in slots between blogs and
+users is minimal.")
 
 (docc user
-      "")
+      "Class representing a user.
+
+Every user is also a blog. See the BLOG class.")
 
 (docc post
-      "")
+      "Superclass for posts. Should not be used directly.
+
+Every type of post has a lot of fields in common with every other, this
+class defines these common fields. Note that some fields, such as
+TWEET, SLUG and POST-FORMAT are only used for creating or editing posts
+and are never actually returned by the API.")
 
 (docc text-post
-      "")
+      "Class representing a text post.")
 
 (docc photo-post
-      "")
+      "Class representing a photo/set post.
+
+In order to change or upload photos, please use the FILE slot.
+Acceptable are a single string (representing the URL to a photo),
+a pathname, an octet vector or a list of pathnames or octet vectors.")
 
 (docc quote-post
-      "")
+      "Class representing a quote post.")
 
 (docc link-post
-      "")
+      "Class representing a link post.")
 
 (docc chat-post
-      "")
+      "Class representing a chat post.")
 
 (docc audio-post
-      "")
+      "Class representing an audio post.
+
+In order to change or upload audio files, please use the FILE slot.
+Acceptable are a string (representing the URL to a music track),
+a pathname or an octet vector. The file format has to be MP3.")
 
 (docc video-post
-      "")
+      "Class representing a video post.
+
+In order to change or upload video files, please use the FILE slot.
+Acceptable are a string (being the HTML embedding code for the video),
+a pathname or an octet vector. The file format has to be MP4 with
+audio encoded in AAC.")
 
 (docc answer-post
-      "")
+      "Class representing an answer post.")
 
 (docc photo
-      "")
+      "Class representing a photo in a photo/set post.")
 
 (docc photo-size
-      "")
+      "Class representing a photo-size of a photo.")
 
 (docc dialogue
-      "")
+      "Class representing a dialogue entry in a chat-post.")
 
 (docc video-player
-      "")
+      "Class representing a video player object in a video-post.")
 
 ;;;
 ;;; GENERICS.LISP
