@@ -39,7 +39,7 @@ Humbler's symbols are split into three packages: `HUMBLER-API` which contains th
 
 Deferred Slots
 --------------
-Tumblr's API don't always return complete objects; some calls only return a slice of the fields an object may exhibit. Humbler tries to take this annoying management off your hands by automatically augmenting your object with slot values from a fitting API call if you try to access it and it is not yet bound. If it fails to augment a slot, either because it does not know any API call to use to retrieve it or because something else went wrong, an error is signalled instead.
+Tumblr's API doesn't always return complete objects; some calls only return a slice of the fields an object may exhibit. Humbler tries to take this annoying management off your hands by automatically augmenting your object with slot values from a fitting API call if you try to access it and it is not yet bound. If it fails to augment a slot, either because it does not know any API call to use to retrieve it or because something else went wrong, an error is signalled instead.
 
 Multiple Users, Multiple South Applications
 -------------------------------------------
