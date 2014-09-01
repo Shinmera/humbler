@@ -34,4 +34,5 @@
                :yason
                :trivial-mimes
                :local-time
-               :closer-mop))
+               :closer-mop
+               :cl-ppcre))
