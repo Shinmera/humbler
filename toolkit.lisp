@@ -115,3 +115,10 @@ This function is DESTRUCTIVE."
               until (<= current-amount 0)
               for current-set = (call current-offset current-amount)
               nconcing current-set))))
+
+(defun print-slots (object)
+  (loop for slotdef in (c2mop:class-slots (class-of object))
+        for slot = (c2mop:slot-definition-name slotdef)
+        do (format T "~a: ~:[UNBOUND~;~:*~s~]~%"
+                   slot (when (slot-boundp object slot)
+                          (slot-value object slot)))))
