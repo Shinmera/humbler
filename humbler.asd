@@ -25,6 +25,7 @@
                (:file "user")
                (:file "tagged")
                (:file "objects")
+               (:file "object-bridge")
                (:file "generics")
                (:file "deferring")
                (:file "auth")
@@ -32,4 +33,5 @@
   :depends-on (:south
                :yason
                :trivial-mimes
-               :local-time))
+               :local-time
+               :closer-mop))
