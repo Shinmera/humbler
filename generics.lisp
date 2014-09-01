@@ -28,7 +28,7 @@
 
 (defgeneric augment (target source)
   (:method (target source)
-    (unless (eql (class-of target) (class-of source))
+    (unless (typep target (type-of source))
       (warn "Attempting to augment ~a with ~a, which do not match in class." target source))
     (flet ((slots (object)
              (mapcar #'c2mop:slot-definition-name (c2mop:class-slots (class-of object)))))
@@ -53,7 +53,7 @@
 
 (defgeneric blog (name)
   (:method ((blog blog))
-    (blog (blog-name blog)))
+    (blog (name blog)))
   (:method ((blog string))
     (make-blog (blog/info blog))))
 
