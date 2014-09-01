@@ -91,3 +91,16 @@ This function is DESTRUCTIVE."
   (local-time:format-timestring
    NIL (local-time:adjust-timestamp timestamp (offset :sec (- (nth-value 9 (local-time:decode-timestamp timestamp)))))
    :format *tumblr-datetime-format*))
+
+(defun pageinate (function offset amount &rest args)
+  (flet ((call (offset amount)
+           (apply function :offset offset :amount amount args)))
+    (if (<= amount 20)
+        (call offset amount)
+        (loop for current-amount = amount
+                then (- current-amount (length current-set))
+              for current-offset = offset
+                then (+ current-offset (length current-set))
+              until (<= current-amount 0)
+              for current-set = (call current-offset current-amount)
+              nconcing current-set))))
