@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8"/>
+    <title>HUMBLER</title>
+    <style type="text/css">
+      code a{text-decoration:none;}
+      h1{display:inline-block;font-size: 28pt;margin-bottom:0;}
+      code{font-family: Consolas, Inconsolata, monospace;}
+      h4{display: inline-block;margin:0;padding:0;}
+      ul{list-style: none;}
+      .package li{margin-bottom: 20px;}
+      .package pre{margin: 0 0 0 10px; white-space: pre-wrap;}
+      .package .nicknames{font-size: 12pt; font-weight: normal;}
+      table{margin: 20px;}
+      td{padding-bottom: 10px;}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>humbler</h1>
+      <span>0.1.0</span>
+      <p>A Tumblr API interface</p>
+    </header>
+    <div id="content">
+      <article>
+        <c:documentate>
+          <span/>
+        </c:documentate>
+      </article>
+      <article>
+        <h2>Copyright</h2>
+        <span>humbler</span> is licensed under the <span><a href="https://tldrlegal.com/search?q=Artistic">Artistic</a></span> license and ©<span>2014</span> <span>Nicolas Hafner &lt;shinmera@tymoon.eu&gt;</span>. This library can be obtained on <a href="https://github.com/Shinmera/humbler">https://github.com/Shinmera/humbler</a>.
+      </article>
+      <article>
+        <h2>Package Index</h2>
+        <ul><li class="package">
+            <h3>
+              <a name="HUMBLER-API" href="#HUMBLER-API">HUMBLER-API</a>
+              <span class="nicknames">(ORG.TYMOONNEXT.HUMBLER.API)</span>
+            </h3>
+            <ul><li>
+                <a name="HUMBLER-API:BLOG/AVATAR"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/AVATAR">BLOG/AVATAR</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY (SIZE 64) FETCH)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the URL to the avatar of the blog.
+
+If FETCH is non-NIL, the avatar itself is fetched and returned as
+the first value and the avatar's URL as secondary value.
+
+SIZE  --- The size of the avatar to return, one of
+          16 24 30 40 48 64 96 128 512</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/FOLLOWERS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/FOLLOWERS">BLOG/FOLLOWERS</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY (LIMIT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Returns a list of followers of this blog.
+Secondary value returns the total number of followers.
+
+LIMIT   --- The number of posts to include, must range between 1 and 20.
+OFFSET  --- The offset in posts to return.
+
+Each object in the list has the following fields:
+NAME       --- The user's name.
+FOLLOWING  --- T if you are following this user, NIL otherwise.
+URL        --- The address to the primary blog of this user.
+UPDATED    --- Unix-time of the last update of this user.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/INFO"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/INFO">BLOG/INFO</a></h4>
+                      <span/>
+                      <span>(BLOG)</span>
+                    </code>
+                  </header>
+                  <pre>Returns information about a blog.
+
+Included fields:
+TITLE        --- The title of the blog.
+POSTS        --- Total number of posts on this blog.
+NAME         --- The blog username.
+UPDATED      --- Unix-Time of the last update.
+DESCRIPTION  --- The blog's description.
+ASK          --- T if asks are enabled, NIL otherwise.
+ASK-ANON     --- T if anonymous asks are allowed, NIL otherwise.
+                 Only included if ASK is T.
+LIKES        --- The number of posts this user has liked.
+                 Only included if likes sharing is enabled and this blog
+                 is indeed a user.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/LIKES"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/LIKES">BLOG/LIKES</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY (LIMIT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Returns a list of publicly shown posts that were liked by this blog.
+Secondary value returns the total number of liked posts.
+
+LIMIT   --- The number of posts to include, must range between 1 and 20.
+OFFSET  --- The offset in posts to return.
+
+See BLOG/POSTS for information on the structure of a post object.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST-AUDIO"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST-AUDIO">BLOG/POST-AUDIO</a></h4>
+                      <span/>
+                      <span>(BLOG AUDIO &amp;KEY CAPTION (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML) SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a audio post and returns the post's ID.
+
+Required arguments:
+BLOG       --- string
+               The name of the blog to post to. Your account has to have access
+               to this blog in order for the post to succeed.
+AUDIO      ::= string | pathname | octet-array
+               If a string, it should be an external URL that hosts the file.
+               Otherwise a pathname/octet-array of an MP3 file.
+
+Optional arguments:
+CAPTION    --- string
+               The caption to describe the audio with.
+STATE      ::= :published | :draft | :queue | :private
+               Sets the state of the post, can later be changed through BLOG/POST/EDIT.
+TAGS       ::= string | list
+               Either a list or a comma-separated string of tags.
+TWEET      ::= string | :off
+               If :off no tweet is made, if a string is given it is used as the tweet text.
+DATE       ::= string | local-time:timestamp
+               'The GMT date and time of the post' according to doc, but no further
+               specification of what the format is supposed to be exactly. According to
+               date fields in responses, it should probably be of the format
+               '2014-08-31 07:41:44 GMT'
+FORMAT     ::= :html | :markdown
+               Specifies the markup in the text body, quote, caption, or whatever the current
+               text-block container is.
+SLUG       --- string
+               A short string to use at the end of the URL to the post.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST-CHAT"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST-CHAT">BLOG/POST-CHAT</a></h4>
+                      <span/>
+                      <span>(BLOG CONVERSATION &amp;KEY TITLE (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML)
+      SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a chat post and returns the post's ID.
+
+Required arguments:
+BLOG       --- string
+               The name of the blog to post to. Your account has to have access
+               to this blog in order for the post to succeed.
+CONVERSATION-- string
+               The conversation to post.
+
+Optional arguments:
+TITLE      --- string
+               The title to use for your conversation post.
+STATE      ::= :published | :draft | :queue | :private
+               Sets the state of the post, can later be changed through BLOG/POST/EDIT.
+TAGS       ::= string | list
+               Either a list or a comma-separated string of tags.
+TWEET      ::= string | :off
+               If :off no tweet is made, if a string is given it is used as the tweet text.
+DATE       ::= string | local-time:timestamp
+               'The GMT date and time of the post' according to doc, but no further
+               specification of what the format is supposed to be exactly. According to
+               date fields in responses, it should probably be of the format
+               '2014-08-31 07:41:44 GMT'
+FORMAT     ::= :html | :markdown
+               Specifies the markup in the text body, quote, caption, or whatever the current
+               text-block container is.
+SLUG       --- string
+               A short string to use at the end of the URL to the post.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST-LINK"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST-LINK">BLOG/POST-LINK</a></h4>
+                      <span/>
+                      <span>(BLOG URL &amp;KEY DESCRIPTION TITLE (STATE PUBLISHED) TAGS TWEET DATE
+      (FORMAT HTML) SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a link post and returns the post's ID.
+
+Required arguments:
+BLOG       --- string
+               The name of the blog to post to. Your account has to have access
+               to this blog in order for the post to succeed.
+URL        --- string
+               The link to post.
+
+Optional arguments:
+TITLE      --- string
+               The title to use for your url post. If not specified automatically
+               grabbed from the URL source page.
+DESCRIPTION--- string
+               Optional description text to use along your URL. If not specified
+               automatically grabbed from the URL source page.
+STATE      ::= :published | :draft | :queue | :private
+               Sets the state of the post, can later be changed through BLOG/POST/EDIT.
+TAGS       ::= string | list
+               Either a list or a comma-separated string of tags.
+TWEET      ::= string | :off
+               If :off no tweet is made, if a string is given it is used as the tweet text.
+DATE       ::= string | local-time:timestamp
+               'The GMT date and time of the post' according to doc, but no further
+               specification of what the format is supposed to be exactly. According to
+               date fields in responses, it should probably be of the format
+               '2014-08-31 07:41:44 GMT'
+FORMAT     ::= :html | :markdown
+               Specifies the markup in the text body, quote, caption, or whatever the current
+               text-block container is.
+SLUG       --- string
+               A short string to use at the end of the URL to the post.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST-PHOTO"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST-PHOTO">BLOG/POST-PHOTO</a></h4>
+                      <span/>
+                      <span>(BLOG PHOTO &amp;KEY CAPTION LINK (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML)
+      SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a photo post and returns the post's ID.
+
+Required arguments:
+BLOG       --- string
+               The name of the blog to post to. Your account has to have access
+               to this blog in order for the post to succeed.
+PHOTO      ::= string | pathname | octet-array | (pathname* octet-array*)
+               If a string, it should be an URL to the photo to be posted.
+               Otherwise a pathname/octet-array or a list thereof to compose
+               the photo or photo-set.
+
+Optional arguments:
+CAPTION    --- string
+               The caption to describe the photo/set with.
+LINK       --- string
+               An optional link to use for when the image is clicked on.
+STATE      ::= :published | :draft | :queue | :private
+               Sets the state of the post, can later be changed through BLOG/POST/EDIT.
+TAGS       ::= string | list
+               Either a list or a comma-separated string of tags.
+TWEET      ::= string | :off
+               If :off no tweet is made, if a string is given it is used as the tweet text.
+DATE       ::= string | local-time:timestamp
+               'The GMT date and time of the post' according to doc, but no further
+               specification of what the format is supposed to be exactly. According to
+               date fields in responses, it should probably be of the format
+               '2014-08-31 07:41:44 GMT'
+FORMAT     ::= :html | :markdown
+               Specifies the markup in the text body, quote, caption, or whatever the current
+               text-block container is.
+SLUG       --- string
+               A short string to use at the end of the URL to the post.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST-QUOTE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST-QUOTE">BLOG/POST-QUOTE</a></h4>
+                      <span/>
+                      <span>(BLOG QUOTE &amp;KEY SOURCE (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML) SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a quote post and returns the post's ID.
+
+Required arguments:
+BLOG       --- string
+               The name of the blog to post to. Your account has to have access
+               to this blog in order for the post to succeed.
+QUOTE      --- string
+               The quote to use, marked up in FORMAT.
+
+Optional arguments:
+SOURCE     --- string
+               Quote source attribution.
+STATE      ::= :published | :draft | :queue | :private
+               Sets the state of the post, can later be changed through BLOG/POST/EDIT.
+TAGS       ::= string | list
+               Either a list or a comma-separated string of tags.
+TWEET      ::= string | :off
+               If :off no tweet is made, if a string is given it is used as the tweet text.
+DATE       ::= string | local-time:timestamp
+               'The GMT date and time of the post' according to doc, but no further
+               specification of what the format is supposed to be exactly. According to
+               date fields in responses, it should probably be of the format
+               '2014-08-31 07:41:44 GMT'
+FORMAT     ::= :html | :markdown
+               Specifies the markup in the text body, quote, caption, or whatever the current
+               text-block container is.
+SLUG       --- string
+               A short string to use at the end of the URL to the post.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST-TEXT"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST-TEXT">BLOG/POST-TEXT</a></h4>
+                      <span/>
+                      <span>(BLOG BODY &amp;KEY TITLE (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML) SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a text post and returns the post's ID.
+
+Required arguments:
+BLOG       --- string
+               The name of the blog to post to. Your account has to have access
+               to this blog in order for the post to succeed.
+BODY       --- string
+               The main post body, marked up in FORMAT.
+
+Optional arguments:
+TITLE      --- string
+               The title to use for your text post.
+STATE      ::= :published | :draft | :queue | :private
+               Sets the state of the post, can later be changed through BLOG/POST/EDIT.
+TAGS       ::= string | list
+               Either a list or a comma-separated string of tags.
+TWEET      ::= string | :off
+               If :off no tweet is made, if a string is given it is used as the tweet text.
+DATE       ::= string | local-time:timestamp
+               'The GMT date and time of the post' according to doc, but no further
+               specification of what the format is supposed to be exactly. According to
+               date fields in responses, it should probably be of the format
+               '2014-08-31 07:41:44 GMT'
+FORMAT     ::= :html | :markdown
+               Specifies the markup in the text body, quote, caption, or whatever the current
+               text-block container is.
+SLUG       --- string
+               A short string to use at the end of the URL to the post.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST-VIDEO"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST-VIDEO">BLOG/POST-VIDEO</a></h4>
+                      <span/>
+                      <span>(BLOG VIDEO &amp;KEY CAPTION (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML) SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a video post and returns the post's ID.
+
+Required arguments:
+BLOG       --- string
+               The name of the blog to post to. Your account has to have access
+               to this blog in order for the post to succeed.
+VIDEO      ::= string | pathname | octet-array
+               If a string, it should be the HTML embed-code for the video.
+               Otherwise a pathname/octet-array of an MP4 video with AAC audio encoding.
+
+Optional arguments:
+CAPTION    --- string
+               THe caption to describe the video with.
+STATE      ::= :published | :draft | :queue | :private
+               Sets the state of the post, can later be changed through BLOG/POST/EDIT.
+TAGS       ::= string | list
+               Either a list or a comma-separated string of tags.
+TWEET      ::= string | :off
+               If :off no tweet is made, if a string is given it is used as the tweet text.
+DATE       ::= string | local-time:timestamp
+               'The GMT date and time of the post' according to doc, but no further
+               specification of what the format is supposed to be exactly. According to
+               date fields in responses, it should probably be of the format
+               '2014-08-31 07:41:44 GMT'
+FORMAT     ::= :html | :markdown
+               Specifies the markup in the text body, quote, caption, or whatever the current
+               text-block container is.
+SLUG       --- string
+               A short string to use at the end of the URL to the post.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST/DELETE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST/DELETE">BLOG/POST/DELETE</a></h4>
+                      <span/>
+                      <span>(BLOG ID)</span>
+                    </code>
+                  </header>
+                  <pre>Delete the post with the given ID.
+
+Returns the post's ID.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST/EDIT"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST/EDIT">BLOG/POST/EDIT</a></h4>
+                      <span/>
+                      <span>(BLOG ID &amp;KEY PHOTO AUDIO VIDEO BODY QUOTE URL CONVERSATION CAPTION DESCRIPTION
+      SOURCE LINK TITLE (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML) SLUG)</span>
+                    </code>
+                  </header>
+                  <pre>Edit the post with the given ID.
+See the individual BLOG/POST-* functions for the argument explanations.
+
+Returns the post ID.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POST/REBLOG"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POST/REBLOG">BLOG/POST/REBLOG</a></h4>
+                      <span/>
+                      <span>(BLOG ID REBLOG-KEY &amp;KEY COMMENT)</span>
+                    </code>
+                  </header>
+                  <pre>Reblog the post with the given ID on the specified BLOG.
+
+ID          --- The post's unique ID.
+REBLOG-KEY  --- The reblog-key for this post (See BLOG/POSTS)
+COMMENT     --- An optional comment to add to the reblog.
+
+Returns the reblog's post ID.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POSTS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POSTS">BLOG/POSTS</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY TYPE ID TAG (LIMIT 20) (OFFSET 0) REBLOG-INFO NOTES-INFO FILTER)</span>
+                    </code>
+                  </header>
+                  <pre>Returns a list of posts from the blog.
+Secondary value contains the total number of posts on the blog.
+Tertiary value contains the blog object. See BLOG/INFO.
+
+TYPE          --- The type of posts to include, must be one of
+                  :text :quote :link :answer :video :audio :photo :chat
+ID            --- If specified with a post-id, only that particular post is
+                  returned.
+TAG           --- Filter posts by a tag.
+LIMIT         --- The number of posts to include, must range between 1 and 20.
+OFFSET        --- The offset in posts to return.
+REBLOG-INFO   --- Whether to return the various 'reblogged-' fields.
+NOTES-INFO    --- Whether to return note count and metadata.
+FILTER        --- The post format to return, either NIL for HTML, :text for
+                  HTML-stripped text, or :raw for the text the user entered.
+
+A post object contains the following fields:
+BLOG-NAME     --- The hostname of the blog.
+ID            --- The unique post-ID.
+POST-URL      --- Direct URL to the post.
+TYPE          --- The type of the post as a string.
+TIMESTAMP     --- Unix-Timestamp of the post's creation date.
+DATE          --- The 'GMT-formatted' version of the creation date.
+FORMAT        --- Either 'html' or 'markdown'.
+REBLOG-KEY    --- The key necessary to reblog this post.
+TAGS          --- The list of tags as strings.
+BOOKMARKLET   --- Only exists if true, signals that the post was made
+                  using the tumblr bookmarklet.
+MOBILE        --- Onlx exists if true, signals that the post was made
+                  using mobile or email publishing.
+SOURCE-URL    --- The source address of quotes, reblogs, etc. Exists only
+                  if there is a source.
+SOURCE-TITLE  --- The title of the source site, exists only if there is a
+                  source.
+LIKED         --- T if you have liked this post, NIL otherwise.
+                  Only exists if you have been logged in.
+STATE         --- The state of the post, one of 'published' 'queued' 'draft'
+                  or 'private'.
+
+Text-post attributes:
+TITLE         --- The title of the post
+BODY          --- The text-post's content.
+
+Photo-post attributes:
+PHOTOS        --- A list of photo objects with the following properties:
+ CAPTION      --- Caption for this particular photo.
+ ALT-SIZES    --- List of size objects with the following properties:
+  WIDTH       --- The exact width of this size in pixels.
+  HEIGHT      --- The exact height of this size in pixels.
+  URL         --- The URL pointing to this image size.
+CAPTION       --- The caption for this photo/set.
+WIDTH         --- Width of the photo/set.
+HEIGHT        --- Height of the photo/set.
+
+Quote-post attributes:
+TEXT          --- The quote text.
+SOURCE        --- HTML of the supplied, supposed quote source.
+
+Link-post attributes:
+TITLE         --- The title of the page the link points to.
+URL           --- The actual address of the link.
+DESCRIPTION   --- An optional description supplied by the user.
+
+Chat-post attributes:
+TITLE         --- Optional title of the conversation.
+BODY          --- The full conversation.
+DIALOGUE      --- List of objects with the following properties:
+ LABEL        --- Conversation entry label.
+ NAME         --- Name of the speaker.
+ PHRASE       --- Actual dialogue sentence.
+
+Audio-post attributes:
+CAPTION       --- The caption the user supplied for the audio post.
+PLAYER        --- HTML player embed code.
+PLAYS         --- Counter for the number of times this has been played.
+ALBUM-ART     --- URL to the album-art image of the track. [ID3]
+ARTIST        --- The track's artist. [ID3]
+ALBUM         --- The track's album. [ID3]
+TRACK-NAME    --- The name of the track. [ID3]
+TRACK-NUMBER  --- The ordering number of the track. [ID3]
+YEAR          --- The publishing year of the track. [ID3]
+
+Video-post attributes:
+CAPTION       --- The caption for the video post.
+PLAYER        --- A list of players with the following properties:
+ WIDTH        --- The width of the player object.
+ EMBED-CODE   --- The HTML embed code for the video player.
+
+Answer-post attributes:
+ASKING-NAME   --- The name of the blog that asked the question.
+ASKING-URL    --- Full URL to the asker's blog.
+QUESTION      --- The actual question text.
+ANSWER        --- Full text of the answer.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POSTS/DRAFT"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POSTS/DRAFT">BLOG/POSTS/DRAFT</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY (BEFORE-ID 0) FILTER)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the list of drafts on the blog.
+See BLOG/POSTS for the post object structure.
+
+BEFORE-ID     --- Returns posts that appear after this ID.
+FILTER        --- The post format to return, either NIL for HTML, :text for
+                  HTML-stripped text, or :raw for the text the user entered.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POSTS/QUEUE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POSTS/QUEUE">BLOG/POSTS/QUEUE</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY (LIMIT 20) (OFFSET 0) FILTER)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the list of posts in the blog's queue.
+See BLOG/POSTS for the post object structure.
+
+LIMIT         --- The number of posts to include, must range between 1 and 20.
+OFFSET        --- The offset in posts to return.
+FILTER        --- The post format to return, either NIL for HTML, :text for
+                  HTML-stripped text, or :raw for the text the user entered.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:BLOG/POSTS/SUBMISSION"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:BLOG/POSTS/SUBMISSION">BLOG/POSTS/SUBMISSION</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY (OFFSET 0) FILTER)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the list of submitted posts and asks.
+See BLOG/POSTS for the post object structure.
+
+OFFSET        --- The offset in posts to return.
+FILTER        --- The post format to return, either NIL for HTML, :text for
+                  HTML-stripped text, or :raw for the text the user entered.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:TAGGED"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:TAGGED">TAGGED</a></h4>
+                      <span/>
+                      <span>(TAG &amp;KEY BEFORE (LIMIT 20) FILTER)</span>
+                    </code>
+                  </header>
+                  <pre>Returns the list of posts under the given tag.
+See BLOG/POSTS for the post object structure.
+
+TAG     --- The tag to filter for.
+BEFORE  --- A Unix-Timestamp from before which time you'd like to get
+            posts returned. Defaults to the current time.
+LIMIT   --- The number of posts to include, must range between 1 and 20.
+FILTER  --- The post format to return, either NIL for HTML, :text for
+            HTML-stripped text, or :raw for the text the user entered.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/DASHBOARD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/DASHBOARD">USER/DASHBOARD</a></h4>
+                      <span/>
+                      <span>(&amp;KEY (LIMIT 20) (OFFSET 0) TYPE (SINCE-ID 0) REBLOG-INFO NOTES-INFO)</span>
+                    </code>
+                  </header>
+                  <pre>Returns a list of posts on your dashboard.
+See BLOG/POSTS for the post object structure.
+
+LIMIT         --- The number of posts to include, must range between 1 and 20.
+OFFSET        --- The offset in posts to return.
+TYPE          --- The type of posts to include, must be one of
+                  :text :quote :link :answer :video :audio :photo :chat
+SINCE-ID      --- Return only posts appearing after this post-ID.
+REBLOG-INFO   --- Whether to return the various 'reblogged-' fields.
+NOTES-INFO    --- Whether to return note count and metadata.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/FOLLOW"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/FOLLOW">USER/FOLLOW</a></h4>
+                      <span/>
+                      <span>(BLOG)</span>
+                    </code>
+                  </header>
+                  <pre>Follow a blog.
+
+BLOG --- The blog's short name.
+
+Returns T on success.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/FOLLOWING"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/FOLLOWING">USER/FOLLOWING</a></h4>
+                      <span/>
+                      <span>(&amp;KEY (LIMIT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Returns a list of blogs you follow.
+
+LIMIT         --- The number of posts to include, must range between 1 and 20.
+OFFSET        --- The offset in posts to return.
+
+A blog object contains the following properties:
+DESCRIPTION  --- The blog's description text.
+UPDATED      --- Unix-Timestamp of the last update.
+TITLE        --- Title used on the blog's page.
+NAME         --- The blog's short name.
+URL          --- The full URL to the blog.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/INFO"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/INFO">USER/INFO</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre>Returns information about yourself.
+
+FOLLOWING        --- Counter for the number of blogs you are following.
+DEFAULT-POST-FORMAT  The default format to use for posting, one of
+                     'html' 'markdown' 'raw'
+NAME             --- The short name of the user.
+LIKES            --- Counter for the number of likes.
+BLOGS            --- A list of blog objects with the following properties:
+ NAME            --- Short name of the blog.
+ URL             --- The full URL to the blog.
+ TITLE           --- The title string used on the blog.
+ PRIMARY         --- T if this is the user's primary blog, NIL otherwise.
+ FOLLOWERS       --- Counter for the number of followers on this blog.
+ TWEET           --- String denoting what to do with tweets (?)
+                     One of 'Y' 'N' 'auto', but idk what the difference
+                     between 'Y' and 'auto' is, so.
+ FACEBOOK        --- Whether to send posts to facebook, either 'Y' or 'N'.
+ TYPE            --- Either 'public' or 'private'.
+
+!! OFFICIALLY UNDOCUMENTED PROPERTIES
+The following BLOG properties are also included in a request:
+ DRAFTS          --- Number of drafts on the blog.
+ QUEUE           --- Number of posts queued up.
+ MESSAGES        --- The number of messages (asks) received.
+ ADMIN           --- Whether you are an administrator of the blog.
+ FACEBOOK-OPENGRAPH-ENABLED No idea wtf this is.
+ TWITTER-SEND    --- Probably whether to send twitter messages? No idea.
+ TWITTER-ENABLED --- Whether twitter was linked or not, most likely.
+ LIKES           --- The number of posts this user-blog has liked.
+ SHARE-LIKES     --- T if likes are shared, NIL otherwise.
+ CAN-SEND-FAN-MAIL - Whether this blog can send fan mail (?)
+ FOLLOWED        --- Not sure, maybe whether the blog follows you?
+ ASK-ANON        --- Whether anon-asks are allowed.
+ ASK-PAGE-TITLE  --- The ask-page title.
+ ASK             --- Whether asks are enabled.
+ IS-NSFW         --- T if this is a NSFW-blog.
+ DESCRIPTION     --- The blog's description.
+ UPDATED         --- Unix-Timestamp of the last update.
+ POSTS           --- Counter for the number of posts on this blog.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/LIKE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/LIKE">USER/LIKE</a></h4>
+                      <span/>
+                      <span>(ID REBLOG-KEY)</span>
+                    </code>
+                  </header>
+                  <pre>Like a post.
+
+ID          --- The post's unique ID.
+REBLOG-KEY  --- The reblog-key for this post (See BLOG/POSTS)
+
+Returns T on success.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/LIKES"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/LIKES">USER/LIKES</a></h4>
+                      <span/>
+                      <span>(&amp;KEY (LIMIT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Returns a list of posts you liked.
+See BLOG/POSTS for the post object structure.
+
+LIMIT         --- The number of posts to include, must range between 1 and 20.
+OFFSET        --- The offset in posts to return.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/UNFOLLOW"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/UNFOLLOW">USER/UNFOLLOW</a></h4>
+                      <span/>
+                      <span>(BLOG)</span>
+                    </code>
+                  </header>
+                  <pre>Unfollow a blog.
+
+BLOG --- The blog's short name.
+
+Returns T on success.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-API:USER/UNLIKE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-API:USER/UNLIKE">USER/UNLIKE</a></h4>
+                      <span/>
+                      <span>(ID REBLOG-KEY)</span>
+                    </code>
+                  </header>
+                  <pre>Unlike a post.
+
+ID          --- The post's unique ID.
+REBLOG-KEY  --- The reblog-key for this post (See BLOG/POSTS)
+
+Returns T on success.</pre>
+                </article>
+              </li></ul>
+          </li><li class="package">
+            <h3>
+              <a name="HUMBLER-OBJECTS" href="#HUMBLER-OBJECTS">HUMBLER-OBJECTS</a>
+              <span class="nicknames">(ORG.TYMOONNEXT.HUMBLER.OBJECTS)</span>
+            </h3>
+            <ul><li>
+                <a name="HUMBLER-OBJECTS:ANSWER-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ANSWER-POST">ANSWER-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:AUDIO-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:AUDIO-POST">AUDIO-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BLOG"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BLOG">BLOG</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:CHAT-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:CHAT-POST">CHAT-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DIALOGUE"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DIALOGUE">DIALOGUE</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:LINK-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:LINK-POST">LINK-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHOTO"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHOTO">PHOTO</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHOTO-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHOTO-POST">PHOTO-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHOTO-SIZE"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHOTO-SIZE">PHOTO-SIZE</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST">POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:QUOTE-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:QUOTE-POST">QUOTE-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TEXT-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TEXT-POST">TEXT-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:USER"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:USER">USER</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:VIDEO-PLAYER"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:VIDEO-PLAYER">VIDEO-PLAYER</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:VIDEO-POST"/>
+                <article>
+                  <header>
+                    <span>CLASS</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:VIDEO-POST">VIDEO-POST</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre></pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MAKE-BLOG"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MAKE-BLOG">MAKE-BLOG</a></h4>
+                      <span/>
+                      <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MAKE-DIALOGUE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MAKE-DIALOGUE">MAKE-DIALOGUE</a></h4>
+                      <span/>
+                      <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MAKE-PHOTO"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MAKE-PHOTO">MAKE-PHOTO</a></h4>
+                      <span/>
+                      <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MAKE-PHOTO-SIZE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MAKE-PHOTO-SIZE">MAKE-PHOTO-SIZE</a></h4>
+                      <span/>
+                      <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MAKE-POST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MAKE-POST">MAKE-POST</a></h4>
+                      <span/>
+                      <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MAKE-USER"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MAKE-USER">MAKE-USER</a></h4>
+                      <span/>
+                      <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MAKE-VIDEO-PLAYER"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MAKE-VIDEO-PLAYER">MAKE-VIDEO-PLAYER</a></h4>
+                      <span/>
+                      <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ADMIN"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ADMIN">ADMIN</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ALBUM"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ALBUM">ALBUM</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ALBUM-ART"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ALBUM-ART">ALBUM-ART</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ANSWER"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ANSWER">ANSWER</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ARTIST"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ARTIST">ARTIST</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ASK-ANON"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ASK-ANON">ASK-ANON</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ASK-P"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ASK-P">ASK-P</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ASK-PAGE-TITLE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ASK-PAGE-TITLE">ASK-PAGE-TITLE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ASKING-NAME"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ASKING-NAME">ASKING-NAME</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ASKING-URL"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ASKING-URL">ASKING-URL</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:AUGMENT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:AUGMENT">AUGMENT</a></h4>
+                      <span/>
+                      <span>(TARGET SOURCE)</span>
+                    </code>
+                  </header>
+                  <pre>Fills up slots in TARGET with information from SOURCE.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:AVATAR"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:AVATAR">AVATAR</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BLOG"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BLOG">BLOG</a></h4>
+                      <span/>
+                      <span>(NAME)</span>
+                    </code>
+                  </header>
+                  <pre>Tries to fetch the blog object given by NAME.
+
+If a blog object is passed, the same post is fetched anew
+and the new copy is returned. The old is left intact.
+
+Returns a blog object or NIL if no blog could be found.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BLOG-NAME"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BLOG-NAME">BLOG-NAME</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BLOG="/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BLOG=">BLOG=</a></h4>
+                      <span/>
+                      <span>(A B)</span>
+                    </code>
+                  </header>
+                  <pre>Returns T if the two blogs match in name, NIL otherwise.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BLOGS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BLOGS">BLOGS</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BODY"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BODY">BODY</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BOOKMARKLET"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BOOKMARKLET">BOOKMARKLET</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:CAN-SEND-FAN-MAIL"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:CAN-SEND-FAN-MAIL">CAN-SEND-FAN-MAIL</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:CAPTION"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:CAPTION">CAPTION</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DASHBOARD"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DASHBOARD">DASHBOARD</a></h4>
+                      <span/>
+                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve a list of posts on your dashboard.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DATE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DATE">DATE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DEFAULT-POST-FORMAT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DEFAULT-POST-FORMAT">DEFAULT-POST-FORMAT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DESCRIPTION"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DESCRIPTION">DESCRIPTION</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DESTROY"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DESTROY">DESTROY</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre>Delete the given post.
+
+Returns the post object on success, signals an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DIALOGUE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DIALOGUE">DIALOGUE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DRAFT-COUNT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DRAFT-COUNT">DRAFT-COUNT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DRAFTS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DRAFTS">DRAFTS</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve a list of drafted posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:EMBED-CODE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:EMBED-CODE">EMBED-CODE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:FACEBOOK-OPENGRAPH-ENABLED"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:FACEBOOK-OPENGRAPH-ENABLED">FACEBOOK-OPENGRAPH-ENABLED</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:FILE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:FILE">FILE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:FOLLOW"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:FOLLOW">FOLLOW</a></h4>
+                      <span/>
+                      <span>(BLOG)</span>
+                    </code>
+                  </header>
+                  <pre>Follow the given blog.
+
+Returns the blog on success, signals an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:FOLLOWED"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:FOLLOWED">FOLLOWED</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:FOLLOWERS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:FOLLOWERS">FOLLOWERS</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                    </code>
+                  </header>
+                  <pre>Returns a list of USER objects that follow the given blog.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:FOLLOWING"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:FOLLOWING">FOLLOWING</a></h4>
+                      <span/>
+                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve a list of blogs that you are following.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:HEIGHT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:HEIGHT">HEIGHT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:ID"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ID">ID</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:LABEL"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:LABEL">LABEL</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:LIKE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:LIKE">LIKE</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre>Like the given post.
+
+Returns the post object on success, signals an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:LIKE-COUNT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:LIKE-COUNT">LIKE-COUNT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:LIKED"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:LIKED">LIKED</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:LIKES"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:LIKES">LIKES</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve a list of liked posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MESSAGE-COUNT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MESSAGE-COUNT">MESSAGE-COUNT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MOBILE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MOBILE">MOBILE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MY-DRAFTS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MY-DRAFTS">MY-DRAFTS</a></h4>
+                      <span/>
+                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Shorthand for (DRAFTS *user*)</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MY-FOLLOWERS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MY-FOLLOWERS">MY-FOLLOWERS</a></h4>
+                      <span/>
+                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Shorthand for (FOLLOWERS *user*)</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MY-LIKES"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MY-LIKES">MY-LIKES</a></h4>
+                      <span/>
+                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Shorthand for (LIKES *user*)</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MY-POSTS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MY-POSTS">MY-POSTS</a></h4>
+                      <span/>
+                      <span>(&amp;KEY TYPE TAG AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Shorthand for (POSTS *user*)</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MY-QUEUE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MY-QUEUE">MY-QUEUE</a></h4>
+                      <span/>
+                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Shorthand for (QUEUE *user*)</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MY-SUBMISSIONS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MY-SUBMISSIONS">MY-SUBMISSIONS</a></h4>
+                      <span/>
+                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre>Shorthand for (SUBMISSIONS *user*)</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MYSELF"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MYSELF">MYSELF</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre>Retrieve information about yourself.
+
+Returns a USER object.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:NAME"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:NAME">NAME</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:NSFW-P"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:NSFW-P">NSFW-P</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHOTOS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHOTOS">PHOTOS</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHRASE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHRASE">PHRASE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PLAY-COUNT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PLAY-COUNT">PLAY-COUNT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PLAYER"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PLAYER">PLAYER</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PLAYERS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PLAYERS">PLAYERS</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST">POST</a></h4>
+                      <span/>
+                      <span>(ID &amp;OPTIONAL BLOG-NAME)</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve an individual post by its unique ID.
+
+If a blog object is passed, the same post is fetched anew
+and the new copy is returned. The old is left intact.
+
+Returns a post object or NIL if no post can be found.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST-COUNT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST-COUNT">POST-COUNT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST-FORMAT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST-FORMAT">POST-FORMAT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST-TYPE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST-TYPE">POST-TYPE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST-URL"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST-URL">POST-URL</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST="/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST=">POST=</a></h4>
+                      <span/>
+                      <span>(A B)</span>
+                    </code>
+                  </header>
+                  <pre>Returns T if the two posts match in ID, NIL otherwise.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POSTS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POSTS">POSTS</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY TYPE TAG AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve a list of public posts filtered by TYPE and TAG.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:QUESTION"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:QUESTION">QUESTION</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:QUEUE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:QUEUE">QUEUE</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve a list of queued posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:QUEUE-COUNT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:QUEUE-COUNT">QUEUE-COUNT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:REBLOG"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:REBLOG">REBLOG</a></h4>
+                      <span/>
+                      <span>(POST &amp;KEY COMMENT)</span>
+                    </code>
+                  </header>
+                  <pre>Reblog the given post.
+
+Returns the newly created reblog post object on success, signals
+an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:REBLOG-KEY"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:REBLOG-KEY">REBLOG-KEY</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:REFRESH"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:REFRESH">REFRESH</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre>Update the post object with newly retrieved values.
+
+This changes the passed object's slots. See AUGMENT.
+
+Returns the post object on success, signals an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SAVE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SAVE">SAVE</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre>Creates or edits the given post with the new values.
+
+Returns the post object on success, signals an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SHARE-LIKES"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SHARE-LIKES">SHARE-LIKES</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SIZES"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SIZES">SIZES</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SLUG"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SLUG">SLUG</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SOURCE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SOURCE">SOURCE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SOURCE-TITLE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SOURCE-TITLE">SOURCE-TITLE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SOURCE-URL"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SOURCE-URL">SOURCE-URL</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:STATE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:STATE">STATE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:SUBMISSIONS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:SUBMISSIONS">SUBMISSIONS</a></h4>
+                      <span/>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                    </code>
+                  </header>
+                  <pre>Retrieve a list of submitted posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TAGS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TAGS">TAGS</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TEXT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TEXT">TEXT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TEXT-FORMAT"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TEXT-FORMAT">TEXT-FORMAT</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TIMESTAMP"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TIMESTAMP">TIMESTAMP</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TITLE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TITLE">TITLE</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TRACK-NAME"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TRACK-NAME">TRACK-NAME</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TRACK-NUMBER"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TRACK-NUMBER">TRACK-NUMBER</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TWEET"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TWEET">TWEET</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TWITTER-ENABLED"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TWITTER-ENABLED">TWITTER-ENABLED</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TWITTER-SEND"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TWITTER-SEND">TWITTER-SEND</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:UNFOLLOW"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:UNFOLLOW">UNFOLLOW</a></h4>
+                      <span/>
+                      <span>(BLOG)</span>
+                    </code>
+                  </header>
+                  <pre>Unfollow the given blog.
+
+Returns the blog on success, signals an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:UNLIKE"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:UNLIKE">UNLIKE</a></h4>
+                      <span/>
+                      <span>(POST)</span>
+                    </code>
+                  </header>
+                  <pre>Unlike the given post.
+
+Returns the post object on success, signals an error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:UPDATED"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:UPDATED">UPDATED</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:URL"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:URL">URL</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:WIDTH"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:WIDTH">WIDTH</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:YEAR"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:YEAR">YEAR</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li></ul>
+          </li><li class="package">
+            <h3>
+              <a name="HUMBLER-EXTRA" href="#HUMBLER-EXTRA">HUMBLER-EXTRA</a>
+              <span class="nicknames">(ORG.TYMOONNEXT.HUMBLER.EXTRA)</span>
+            </h3>
+            <ul><li>
+                <a name="HUMBLER-EXTRA:FORMAT-TUMBLR-DATE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:FORMAT-TUMBLR-DATE">FORMAT-TUMBLR-DATE</a></h4>
+                      <span/>
+                      <span>(TIMESTAMP)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:FROM-KEYWORD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:FROM-KEYWORD">FROM-KEYWORD</a></h4>
+                      <span/>
+                      <span>(KEYWORD)</span>
+                    </code>
+                  </header>
+                  <pre>Turns a keyword into a key.
+Replaces - with _ and downcases the keyword as a string.
+This is useful to parse the request parameters from the
+lisp representation into the api representation.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:GET-UNIX-TIME"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:GET-UNIX-TIME">GET-UNIX-TIME</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:LOGIN"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:LOGIN">LOGIN</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:LOGOUT"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:LOGOUT">LOGOUT</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PAGEINATE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PAGEINATE">PAGEINATE</a></h4>
+                      <span/>
+                      <span>(FUNCTION OFFSET AMOUNT &amp;REST ARGS)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PARSE-TUMBLR-DATE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PARSE-TUMBLR-DATE">PARSE-TUMBLR-DATE</a></h4>
+                      <span/>
+                      <span>(DATESTRING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PREPARE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PREPARE">PREPARE</a></h4>
+                      <span/>
+                      <span>(PARAMETERS)</span>
+                    </code>
+                  </header>
+                  <pre>Filters out empty key-value pairs and turns all values
+into strings, ready to be sent out as request parameters.
+This function is DESTRUCTIVE.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PRINT-SLOTS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PRINT-SLOTS">PRINT-SLOTS</a></h4>
+                      <span/>
+                      <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:RAW-REQUEST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:RAW-REQUEST">RAW-REQUEST</a></h4>
+                      <span/>
+                      <span>(URL &amp;KEY (METHOD GET) PARAMETERS OAUTH (REDIRECT 10) &amp;ALLOW-OTHER-KEYS)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:REQUEST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:REQUEST">REQUEST</a></h4>
+                      <span/>
+                      <span>(URL &amp;REST ARGS &amp;KEY (METHOD GET) PARAMETERS OAUTH (REDIRECT 10)
+     (REQUEST-FUN #'RAW-REQUEST) &amp;ALLOW-OTHER-KEYS)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:TO-KEYWORD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:TO-KEYWORD">TO-KEYWORD</a></h4>
+                      <span/>
+                      <span>(STRING)</span>
+                    </code>
+                  </header>
+                  <pre>Turns a key into a keyword.
+Replaces _ with - and uppercases the string, then interns it
+into the keyword package. This is useful to parse the request
+responses into an alist.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PREPARE*"/>
+                <article>
+                  <header>
+                    <span>MACRO</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PREPARE*">PREPARE*</a></h4>
+                      <span/>
+                      <span>(&amp;REST PARAMETER-NAMES)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a PREPARE statement out of the provided variables.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:*TUMBLR-DATETIME-FORMAT*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:*TUMBLR-DATETIME-FORMAT*">*TUMBLR-DATETIME-FORMAT*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:*USER*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:*USER*">*USER*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li></ul>
+          </li></ul>
+      </article>
+    </div>
+  </body>
+</html>
