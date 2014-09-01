@@ -30,6 +30,11 @@
    (ask-page-title :initarg :ask-page-title :reader ask-page-title)
    (is-nsfw :initarg :is-nsfw :reader is-nsfw)))
 
+(defmethod print-object ((blog blog) stream)
+  (print-unreadable-object (blog stream :type T :identity T)
+    (format stream "~a" (name blog)))
+  blog)
+
 (defclass user (blog)
   ((following-count :initarg :following-count :reader following-count)
    (default-post-format :initarg :default-post-format :reader default-post-format)
@@ -55,6 +60,11 @@
    (post-format :initarg :post-format :accessor post-format)
    (tweet :initarg :tweet :accessor tweet)
    (slug :initarg :slug :accessor slug)))
+
+(defmethod print-object ((post post) stream)
+  (print-unreadable-object (post stream :type T :identity T)
+    (format stream "~a ~a" (blog-name post) (id post)))
+  post)
 
 (defclass text-post (post)
   ((title :initarg :title :accessor title)
@@ -113,11 +123,26 @@
    (height :initarg :height :reader height)
    (url :initarg :url :reader url)))
 
+(defmethod print-object ((photo-size photo-size) stream)
+  (print-unreadable-object (photo-size stream :type T :identity T)
+    (format stream "~ax~a (~a)" (width photo-size) (height photo-size) (url photo-size)))
+  photo-size)
+
 (defclass dialogue ()
   ((label :initarg :label :reader label)
    (name :initarg :name :reader name)
    (phrase :initarg :phrase :reader phrase)))
 
+(defmethod print-object ((dialogue dialogue) stream)
+  (print-unreadable-object (dialogue stream :type T :identity T)
+    (format stream "~a ~s" (label dialogue) (phrase dialogue)))
+  dialogue)
+
 (defclass video-player ()
   ((width :initarg :width :reader width)
    (embed-code :initarg :embed-code :reader embed-code)))
+
+(defmethod print-object ((video-player video-player) stream)
+  (print-unreadable-object (video-player stream :type T :identity T)
+    (format stream "~a" (width video-player)))
+  video-player)
