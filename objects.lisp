@@ -25,10 +25,10 @@
    (twitter-enabled :initarg :twitter-enabled :reader twitter-enabled)
    (can-send-fan-mail :initarg :can-send-fan-mail :reader can-send-fan-mail)
    (followed :initarg :followed :reader followed)
-   (ask :initarg :ask :reader ask)
+   (ask-p :initarg :ask-p :reader ask-p)
    (ask-anon :initarg :ask-anon :reader ask-anon)
    (ask-page-title :initarg :ask-page-title :reader ask-page-title)
-   (is-nsfw :initarg :is-nsfw :reader is-nsfw)))
+   (nsfw-p :initarg :nsfw-p :reader nsfw-p)))
 
 (defmethod print-object ((blog blog) stream)
   (print-unreadable-object (blog stream :type T :identity T)

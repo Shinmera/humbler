@@ -81,8 +81,10 @@
   (make-from-result result 'blog
     :name :url :title :avatar :description :updated :share-likes
     :admin :facebook-opengraph-enabled :twitter-send
-    :twitter-enabled :can-send-fan-mail :followed :ask :ask-anon
-    :ask-page-title :is-nsfw
+    :twitter-enabled :can-send-fan-mail :followed :ask-anon
+    :ask-page-title
+    (map-field :ask-p :ask)
+    (map-field :nsfw-p :is-nsfw)
     (map-field :draft-count :drafts)
     (map-field :queue-count :queue)
     (map-field :message-count :messages)
