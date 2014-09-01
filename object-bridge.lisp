@@ -94,7 +94,7 @@
 (defun make-user (result)
   (let ((user (change-class (make-blog result) 'user)))
     (make-from-result result user
-      :default-post-format
+      (map-field :default-post-format :default-post-format #'kaget)
       (map-field :following-count :following)
       (map-field-list :blogs :blogs #'make-blog))
     user))
