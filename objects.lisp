@@ -41,8 +41,8 @@
    (blog-name :initarg :blog-name :reader blog-name)
    (post-url :initarg :post-url :reader post-url)
    (timestamp :initarg :timestamp :reader timestamp)
-   (date :initarg :date :reader date)
-   (text-format :initarg :text-format :reader text-format)
+   (date :initarg :date :accessor date)
+   (text-format :initarg :text-format :accessor text-format)
    (reblog-key :initarg :reblog-key :reader reblog-key)
    (tags :initarg :tags :accessor tags)
    (bookmarklet :initarg :bookmarklet :reader bookmarklet)
@@ -50,7 +50,11 @@
    (source-url :initarg :source-url :reader source-url)
    (source-title :initarg :source-title :reader source-title)
    (liked :initarg :liked :reader liked)
-   (state :initarg :state :reader state)))
+   (state :initarg :state :accessor state)
+   ;; Posting-only props.
+   (post-format :initarg :post-format :accessor post-format)
+   (tweet :initarg :tweet :accessor tweet)
+   (slug :initarg :slug :accessor slug)))
 
 (defclass text-post (post)
   ((title :initarg :title :accessor title)
@@ -58,6 +62,7 @@
 
 (defclass photo-post (post)
   ((photos :initarg :photos :accessor photos)
+   (file :initarg :file :accessor file)
    (caption :initarg :caption :accessor caption)
    (width :initarg :width :reader width)
    (height :initarg :height :reader height)))
