@@ -6,13 +6,17 @@
 
 (in-package #:org.tymoonnext.humbler)
 
+(defvar *oauth/request-token* "http://www.tumblr.com/oauth/request_token")
+(defvar *oauth/authorize* "http://www.tumblr.com/oauth/authorize")
+(defvar *oauth/access-token* "http://www.tumblr.com/oauth/access_token")
+
 (defvar *user* NIL
   "The central user object storing a reference to whoever is currently logged in.")
 
 (south:prepare
- :oauth/request-token "http://www.tumblr.com/oauth/request_token"
- :oauth/authorize "http://www.tumblr.com/oauth/authorize"
- :oauth/access-token "http://www.tumblr.com/oauth/access_token")
+ :oauth/request-token *oauth/request-token*
+ :oauth/authorize *oauth/authorize*
+ :oauth/access-token *oauth/access-token*)
 
 (defun init-user ()
   "Initializes the *USER* object."

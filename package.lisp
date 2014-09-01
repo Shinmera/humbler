@@ -206,6 +206,9 @@
   (:nicknames #:org.tymoonnext.humbler.extra)
   ;; auth.lisp
   (:export
+   #:*oauth/access-token*
+   #:*oauth/authorize*
+   #:*oauth/request-token*
    #:*user*
    #:login
    #:logout)
