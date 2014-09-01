@@ -16,7 +16,7 @@
 (defvar *user/unlike* "https://api.tumblr.com/v2/user/unlike")
 
 (defun user/info ()
-  (request *user/info* :oauth T))
+  (aget :user (request *user/info* :oauth T)))
 
 (defun user/dashboard (&key (limit 20) (offset 0) type (since-id 0) reblog-info notes-info)
   (assert (member type '(NIL :text :quote :link :answer :video :audio :photo :chat))
