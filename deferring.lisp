@@ -13,6 +13,7 @@
                collect `(defmethod ,reader :before ((,var ,class))
                           (unless (slot-boundp ,var ',reader)
                             (let ((reader ',reader))
+                              (declare (ignorable reader))
                               ,@fill-calls)))))))
 
 (defmacro set-undeferred (class readers)
@@ -31,18 +32,18 @@
            ;; Ho boy.
            (setf (slot-value ,var reader) NIL)))))
 
-(set-deferred blog (title post-count name updated description
-                          ask ask-anon like-count)
+(set-deferred blog (title url post-count updated description
+                          ask ask-anon ask-page-title like-count share-likes)
   (augment blog (blog blog)))
 
 (set-deferred blog (avatar)
-  (setf (slot-value blog '%avatar)
+  (setf (slot-value blog 'avatar)
         (blog/avatar (name blog))))
 
-(set-undeferred blog (url draft-count queue-count message-count
-                          share-likes admin facebook-opengraph-enabled
-                          twitter-send twitter-enabled can-send-fan-mail
-                          followed as-page-title is-nsfw))
+(set-undeferred blog (draft-count queue-count message-count
+                                  admin facebook-opengraph-enabled
+                                  twitter-send twitter-enabled can-send-fan-mail
+                                  followed is-nsfw))
 
 (set-deferred user (following-count default-post-format blogs)
   (if (blog= user *user*)
