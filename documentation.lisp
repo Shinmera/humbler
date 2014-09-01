@@ -509,8 +509,8 @@ Returns T on success.")
 (docf blog
       "Tries to fetch the blog object given by NAME.
 
-If a blog object is passed, its fields are updated with the newly 
-retrieved values.
+If a blog object is passed, the same post is fetched anew
+and the new copy is returned. The old is left intact.
 
 Returns a blog object or NIL if no blog could be found.")
 
@@ -563,8 +563,8 @@ gather the desired amount automatically.")
 (docf post
       "Retrieve an individual post by its unique ID.
 
-If a blog object is passed, its fields are updated with the newly
-retrieved values.
+If a blog object is passed, the same post is fetched anew
+and the new copy is returned. The old is left intact.
 
 Returns a post object or NIL if no post can be found.")
 
@@ -596,6 +596,8 @@ Returns the post object on success, signals an error on failure.")
 
 (docf refresh
       "Update the post object with newly retrieved values.
+
+This changes the passed object's slots. See AUGMENT.
 
 Returns the post object on success, signals an error on failure.")
 
