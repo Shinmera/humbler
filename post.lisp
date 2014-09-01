@@ -12,7 +12,7 @@
 (defvar *blog/post/delete* "https://api.tumblr.com/v2/blog/~a.tumblr.com/post/delete")
 
 ;; Evil macro, but it's only used in this controlled env, so I don't care to make it nice.
-(defun %post-fun-header ()
+(defmacro %post-fun-header ()
   `(progn
      (assert (find state '(:published :draft :queue :private))
              () "State must be one of (:published :draft :queue :private)")
