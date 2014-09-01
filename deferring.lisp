@@ -19,9 +19,21 @@
   `(set-deferred ,class ,readers
      (error "Slot ~a not set and don't know how to retrieve it." reader)))
 
+(defmacro set-post-deferred (class readers &body fill-calls)
+  (destructuring-bind (class &optional (var class)) (if (listp class) class (list class))
+    `(set-deferred (,class ,var) ,readers
+       (if (slot-boundp ,var 'id)
+           (progn ,@fill-calls)
+           ;; Default to NIL since we are creating a post.
+           ;; Most likely.
+           ;; I hope.
+           ;;
+           ;; Ho boy.
+           (setf (slot-value ,var reader) NIL)))))
+
 (set-deferred blog (title post-count name updated description
                           ask ask-anon like-count)
-  (blog blog))
+  (augment blog (blog blog)))
 
 (set-deferred blog (avatar)
   (setf (slot-value blog '%avatar)
@@ -37,38 +49,40 @@
       (augment user (myself))
       (error "Slot ~a not set and don't know how to retrieve it." reader)))
 
-(set-deferred post (post-type blog-name post-url timestamp date text-format
+(set-post-deferred post (post-type blog-name post-url timestamp date text-format
                               reblog-key tags bookmarklet mobile source-url
                               source-title liked state)
   (refresh post))
 
-(set-deferred text-post (title body)
+(set-post-deferred text-post (title body)
   (refresh text-post))
 
-(set-deferred photo-post (photos caption width height)
+(set-post-deferred photo-post (photos caption width height)
   (refresh photo-post))
 
-(set-deferred quote-post (text source)
+(set-post-deferred quote-post (text source)
   (refresh quote-post))
 
-(set-deferred link-post (title url description)
+(set-post-deferred link-post (title url description)
   (refresh link-post))
 
-(set-deferred chat-post (title body dialogue)
+(set-post-deferred chat-post (title body dialogue)
   (refresh chat-post))
 
-(set-deferred audio-post (caption player play-count album-art artist album
+(set-post-deferred audio-post (caption player play-count album-art artist album
                                   track-name track-number year)
   (refresh audio-post))
 
-(set-deferred video-post (caption players)
+(set-post-deferred video-post (caption players)
   (refresh video-post))
 
-(set-deferred answer-post (asking-name asking-url question answer)
+(set-post-deferred answer-post (asking-name asking-url question answer)
   (refresh answer-post))
 
 ;; Defaulting to undeferred
-(set-undeferred post (id title body photos caption width height source url
-                         description dialogue player play-count album-art
-                         artist album track-name track-number year players
-                         askin-name asking-url question answer))
+(set-post-deferred post (id title body photos caption width height source url
+                            description dialogue player play-count album-art
+                            artist album track-name track-number year players
+                            askin-name asking-url question answer
+                            file post-format tweet slug)
+  (error "Slot ~a not set and don't know how to retrieve it." reader))
