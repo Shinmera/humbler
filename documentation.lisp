@@ -10,6 +10,10 @@
   `(setf (documentation ',function 'function)
          (format NIL ,docstring ,@format-args)))
 
+(defmacro docc (class docstring &rest format-args)
+  `(setf (documentation (find-class ',class) T)
+         (format NIL ,docstring ,@format-args)))
+
 ;;;
 ;;; BLOG.LISP
 ;;;
@@ -236,8 +240,6 @@ LIKED         --- T if you have liked this post, NIL otherwise.
                   Only exists if you have been logged in.
 STATE         --- The state of the post, one of 'published' 'queued' 'draft'
                   or 'private'.
-TOTAL-POSTS   --- The total number of posts available for this particular 
-                  request, useful for iteration.
 
 Text-post attributes:
 TITLE         --- The title of the post
@@ -440,3 +442,194 @@ ID          --- The post's unique ID.
 REBLOG-KEY  --- The reblog-key for this post (See BLOG/POSTS)
 
 Returns T on success.")
+
+
+;;;
+;;; OBJECTS.LISP
+;;;
+
+(docc blog
+      "")
+
+(docc user
+      "")
+
+(docc post
+      "")
+
+(docc text-post
+      "")
+
+(docc photo-post
+      "")
+
+(docc quote-post
+      "")
+
+(docc link-post
+      "")
+
+(docc chat-post
+      "")
+
+(docc audio-post
+      "")
+
+(docc video-post
+      "")
+
+(docc answer-post
+      "")
+
+(docc photo
+      "")
+
+(docc photo-size
+      "")
+
+(docc dialogue
+      "")
+
+(docc video-player
+      "")
+
+;;;
+;;; GENERICS.LISP
+;;;
+
+(docf blog=
+      "Returns T if the two blogs match in name, NIL otherwise.")
+
+(docf post=
+      "Returns T if the two posts match in ID, NIL otherwise.")
+
+(docf augment
+      "Fills up slots in TARGET with information from SOURCE.")
+
+(docf blog
+      "Tries to fetch the blog object given by NAME.
+
+If a blog object is passed, its fields are updated with the newly 
+retrieved values.
+
+Returns a blog object or NIL if no blog could be found.")
+
+(docf followers
+      "Returns a list of USER objects that follow the given blog.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf follow
+      "Follow the given blog.
+
+Returns the blog on success, signals an error on failure.")
+
+(docf unfollow
+      "Unfollow the given blog.
+
+Returns the blog on success, signals an error on failure.")
+
+(docf likes
+      "Retrieve a list of liked posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf submissions
+      "Retrieve a list of submitted posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf drafts
+      "Retrieve a list of drafted posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf queue
+      "Retrieve a list of queued posts if possible.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf posts
+      "Retrieve a list of public posts filtered by TYPE and TAG.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf post
+      "Retrieve an individual post by its unique ID.
+
+If a blog object is passed, its fields are updated with the newly
+retrieved values.
+
+Returns a post object or NIL if no post can be found.")
+
+(docf save
+      "Creates or edits the given post with the new values.
+
+Returns the post object on success, signals an error on failure.")
+
+(docf destroy
+      "Delete the given post.
+
+Returns the post object on success, signals an error on failure.")
+
+(docf reblog
+      "Reblog the given post.
+
+Returns the newly created reblog post object on success, signals
+an error on failure.")
+
+(docf like
+      "Like the given post.
+
+Returns the post object on success, signals an error on failure.")
+
+(docf unlike
+      "Unlike the given post.
+
+Returns the post object on success, signals an error on failure.")
+
+(docf refresh
+      "Update the post object with newly retrieved values.
+
+Returns the post object on success, signals an error on failure.")
+
+(docf dashboard
+      "Retrieve a list of posts on your dashboard.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf following
+      "Retrieve a list of blogs that you are following.
+
+If AMOUNT is above twenty, multiple requests are made in order to
+gather the desired amount automatically.")
+
+(docf myself
+      "Retrieve information about yourself.
+
+Returns a USER object.")
+
+(docf my-followers
+      "Shorthand for (FOLLOWERS *user*)")
+
+(docf my-likes
+      "Shorthand for (LIKES *user*)")
+
+(docf my-submissions
+      "Shorthand for (SUBMISSIONS *user*)")
+
+(docf my-drafts
+      "Shorthand for (DRAFTS *user*)")
+
+(docf my-queue
+      "Shorthand for (QUEUE *user*)")
+
+(docf my-posts
+      "Shorthand for (POSTS *user*)")
