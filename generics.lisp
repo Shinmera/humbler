@@ -28,6 +28,8 @@
 
 (defgeneric augment (target source)
   (:method (target source)
+    (unless (eql (class-of target) (class-of source))
+      (warn "Attempting to augment ~a with ~a, which do not match in class." target source))
     (flet ((slots (object)
              (mapcar #'c2mop:slot-definition-name (c2mop:class-slots (class-of object)))))
       (loop with target-slots = (slots target)
@@ -36,7 +38,18 @@
                       (find slot target-slots))
               do (setf (slot-value target slot)
                        (slot-value source slot))))
-    target))
+    target)
+  (:method ((target post) (source post))
+    ;; raw post (somehow), change to source.
+    (when (and (eql (class-of target) (find-class 'post))
+               (not (eql (class-of source) (find-class 'post))))
+      (warn "Changing class of raw-post target (~a) to that of source (~a)" target source)
+      (setf target (change-class target (class-name (class-of source)))))
+    ;; differing post sub-classes, error out.
+    (unless (or (eql (class-of target) (class-of source))
+                (eql (class-of source) (find-class 'post)))
+      (error "Cannot augment ~a with ~a, different post-subclasses are incompatible." target source))
+    (call-next-method target source)))
 
 (defgeneric blog (name)
   (:method ((blog blog))
