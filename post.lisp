@@ -79,9 +79,9 @@
     (post-wrapper (format NIL *blog/post* blog) params :video video)))
 
 (defun blog/post/edit (blog id &key photo audio video body quote url conversation caption description
-                                     source link title (state :published) tags tweet date (format :html) slug)
+                                    answer source link title (state :published) tags tweet date (format :html) slug)
   (%post-fun-header)
-  (let ((params (prepare* id body quote url conversation caption description source link title state tags tweet date format slug)))
+  (let ((params (prepare* id body quote url conversation caption description answer source link title state tags tweet date format slug)))
     (post-wrapper (format NIL *blog/post/edit* blog) params :photo photo :audio audio :video video)))
 
 (defun blog/post/reblog (blog id reblog-key &key comment)
