@@ -120,11 +120,11 @@ If it fails to parse, the datestring is returned instead."
 
 (defun pageinate (function offset amount &rest args)
   "Gather results from FUNCTION until AMOUNT is gathered.
-The function needs to accept both OFFSET and AMOUNT keywords.
+The function needs to accept both OFFSET and LIMIT keywords.
 As per default for tumblr calls, the objects are gathered in
 steps of twenty."
   (flet ((call (offset amount)
-           (apply function :offset offset :amount amount args)))
+           (apply function :offset offset :limit amount args)))
     (if (<= amount 20)
         (call offset amount)
         (loop for current-amount = amount
@@ -132,7 +132,8 @@ steps of twenty."
               for current-offset = offset
                 then (+ current-offset (length current-set))
               until (<= current-amount 0)
-              for current-set = (call current-offset current-amount)
+              for current-set = (call current-offset (if (<= current-amount 20)
+                                                         current-amount 20))
               while current-set
               nconcing current-set))))
 
