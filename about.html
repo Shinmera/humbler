@@ -64,6 +64,32 @@
 
 <p>If you need to allow multiple users or south-using applications simultaneously, you'll need to handle the login and environment establishment yourself. Have a look at the <a href="http://shinmera.github.io/south/">South</a> documentation for more information on how to go about this. This functionality is not included in Humbler directly as it is too complex to handle in a generic way.</p>
 
+<h2>More Examples</h2>
+
+<p>Post to all your blogs:</p>
+
+<pre><code>(<a href="http://l1sp.org/cl/DOLIST">dolist</a> (<a href="#HUMBLER-OBJECTS:BLOG">blog</a> (<a href="#HUMBLER-OBJECTS:MY-BLOGS">my-blogs</a>))
+  (<a href="#HUMBLER-OBJECTS:REPOST">repost</a> (<a href="http://l1sp.org/cl/MAKE-INSTANCE">make-instance</a> 'text-post :body &quot;Hi!&quot;) blog))</code></pre>
+
+<p>Reblog the last 100 photos from a blog:</p>
+
+<pre><code>(<a href="http://l1sp.org/cl/MAPCAR">mapcar</a> #'reblog (<a href="#HUMBLER-OBJECTS:POSTS">posts</a> &quot;cool-photo-blog&quot; :type :photo :amount 100))</code></pre>
+
+<p>View the most recent text posts from a tag:</p>
+
+<pre><code>(<a href="http://l1sp.org/cl/MAPCAR">mapcar</a> #'body (<a href="http://l1sp.org/cl/REMOVE-IF-NOT">remove-if-not</a> #'text-post-p (<a href="#HUMBLER-OBJECTS:TAG">tag</a> &quot;interesting-tag)))</code></pre>
+
+<p>Delete all your drafts:</p>
+
+<pre><code>(<a href="http://l1sp.org/cl/MAPCAR">mapcar</a> #'destroy (<a href="#HUMBLER-OBJECTS:MY-DRAFTS">my-drafts</a> :amount T))</code></pre>
+
+<p>Interactively reply to all your asks:</p>
+
+<pre><code>(<a href="http://l1sp.org/cl/DOLIST">dolist</a> (sub (<a href="#HUMBLER-OBJECTS:MY-SUBMISSIONS">my-submissions</a> :amount T))
+  (<a href="http://l1sp.org/cl/WHEN">when</a> (<a href="#HUMBLER-OBJECTS:ANSWER-POST-P">answer-post-p</a> sub)
+    (<a href="http://l1sp.org/cl/FORMAT">format</a> T &quot;~a: ~a~%&quot; (<a href="#HUMBLER-OBJECTS:ASKING-NAME">asking-name</a> sub) (<a href="#HUMBLER-OBJECTS:QUESTION">question</a> sub))
+    (<a href="#HUMBLER-OBJECTS:REPLY">reply</a> sub (<a href="http://l1sp.org/cl/READ-LINE">read-line</a>))))</code></pre>
+
 <h2>Further Reading</h2>
 
 <ul>
@@ -490,13 +516,11 @@ Returns the post's ID.</pre>
                       <h4><a href="#HUMBLER-API:BLOG/POST/EDIT">BLOG/POST/EDIT</a></h4>
                       <span/>
                       <span>(BLOG ID &amp;KEY PHOTO AUDIO VIDEO BODY QUOTE URL CONVERSATION CAPTION DESCRIPTION
-      SOURCE LINK TITLE (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML) SLUG)</span>
+      ANSWER SOURCE LINK TITLE (STATE PUBLISHED) TAGS TWEET DATE (FORMAT HTML)
+      SLUG)</span>
                     </code>
                   </header>
-                  <pre>Edit the post with the given ID.
-See the individual BLOG/POST-* functions for the argument explanations.
-
-Returns the post ID.</pre>
+                  <pre/>
                 </article>
               </li><li>
                 <a name="HUMBLER-API:BLOG/POST/REBLOG"/>
@@ -706,7 +730,7 @@ FILTER  --- The post format to return, either NIL for HTML, :text for
                     <code>
                       <h4><a href="#HUMBLER-API:USER/DASHBOARD">USER/DASHBOARD</a></h4>
                       <span/>
-                      <span>(&amp;KEY (LIMIT 20) (OFFSET 0) TYPE (SINCE-ID 0) REBLOG-INFO NOTES-INFO)</span>
+                      <span>(&amp;KEY (LIMIT 20) (OFFSET 0) TYPE SINCE-ID REBLOG-INFO NOTES-INFO)</span>
                     </code>
                   </header>
                   <pre>Returns a list of posts on your dashboard.
@@ -880,6 +904,309 @@ ID          --- The post's unique ID.
 REBLOG-KEY  --- The reblog-key for this post (See BLOG/POSTS)
 
 Returns T on success.</pre>
+                </article>
+              </li></ul>
+          </li><li class="package">
+            <h3>
+              <a name="HUMBLER-EXTRA" href="#HUMBLER-EXTRA">HUMBLER-EXTRA</a>
+              <span class="nicknames">(ORG.TYMOONNEXT.HUMBLER.EXTRA)</span>
+            </h3>
+            <ul><li>
+                <a name="HUMBLER-EXTRA:FORMAT-TUMBLR-DATE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:FORMAT-TUMBLR-DATE">FORMAT-TUMBLR-DATE</a></h4>
+                      <span/>
+                      <span>(TIMESTAMP)</span>
+                    </code>
+                  </header>
+                  <pre>Returns a string version of the local-time timestamp using the proper timezone and format.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:FROM-KEYWORD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:FROM-KEYWORD">FROM-KEYWORD</a></h4>
+                      <span/>
+                      <span>(KEYWORD)</span>
+                    </code>
+                  </header>
+                  <pre>Turns a keyword into a key.
+Replaces - with _ and downcases the keyword as a string.
+This is useful to parse the request parameters from the
+lisp representation into the api representation.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:GET-UNIX-TIME"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:GET-UNIX-TIME">GET-UNIX-TIME</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre>Returns an integer representing the seconds since the unix epoch.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:LOGIN"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:LOGIN">LOGIN</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre>Performs a SERVER login with South.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:LOGOUT"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:LOGOUT">LOGOUT</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre>Resets South's access tokens, thus logging you out.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PAGEINATE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PAGEINATE">PAGEINATE</a></h4>
+                      <span/>
+                      <span>(FUNCTION OFFSET AMOUNT &amp;REST ARGS)</span>
+                    </code>
+                  </header>
+                  <pre>Gather results from FUNCTION until AMOUNT is gathered.
+The function needs to accept both OFFSET and LIMIT keywords.
+As per default for tumblr calls, the objects are gathered in
+steps of twenty.
+
+AMOUNT can be a positive integer or T for as many as possible.
+
+The returned set may be less than the requested amount.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PAGEINATE-ID"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PAGEINATE-ID">PAGEINATE-ID</a></h4>
+                      <span/>
+                      <span>(FUNCTION BEFORE-ID OFFSET AMOUNT &amp;REST ARGS)</span>
+                    </code>
+                  </header>
+                  <pre>Gather results from FUNCTION until AMOUNT is gathered.
+The function needs to accept a BEFORE-ID keyword and return
+a list of objects that have an ID slot accessible through
+the ID reader.
+
+AMOUNT can be a positive integer or T for as many as possible.
+
+The returned set may be less than the requested amount.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PAGEINATE-TIME"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PAGEINATE-TIME">PAGEINATE-TIME</a></h4>
+                      <span/>
+                      <span>(FUNCTION BEFORE-TIME OFFSET AMOUNT &amp;REST ARGS)</span>
+                    </code>
+                  </header>
+                  <pre>Gather results from FUNCTION until AMOUNT is gathered.
+The function needs to accept a BEFORE keyword and return
+a list of objects that have a TIMESTAMP slot accessible
+through the TIMESTAMP reader.
+
+AMOUNT can be a positive integer or T for as many as possible.
+
+The returned set may be less than the requested amount.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PARSE-TUMBLR-DATE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PARSE-TUMBLR-DATE">PARSE-TUMBLR-DATE</a></h4>
+                      <span/>
+                      <span>(DATESTRING)</span>
+                    </code>
+                  </header>
+                  <pre>Parses a tumblr datestring (2014-08-01 23:52:31 GMT) into a local-time timestamp.
+If it fails to parse, the datestring is returned instead.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PREPARE"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PREPARE">PREPARE</a></h4>
+                      <span/>
+                      <span>(PARAMETERS)</span>
+                    </code>
+                  </header>
+                  <pre>Filters out empty key-value pairs and turns all values
+into strings, ready to be sent out as request parameters.
+This function is DESTRUCTIVE.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PRINT-SLOTS"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PRINT-SLOTS">PRINT-SLOTS</a></h4>
+                      <span/>
+                      <span>(OBJECT &amp;KEY (OMIT-UNBOUND T))</span>
+                    </code>
+                  </header>
+                  <pre>Prints all slots of the object and their values.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:RAW-REQUEST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:RAW-REQUEST">RAW-REQUEST</a></h4>
+                      <span/>
+                      <span>(URL &amp;KEY (METHOD GET) PARAMETERS OAUTH (REDIRECT 10) &amp;ALLOW-OTHER-KEYS)</span>
+                    </code>
+                  </header>
+                  <pre>Performs a raw request, with JSON as text.
+
+URL         --- Url to request, see DRAKMA:HTTP-REQUEST
+METHOD      --- Request method, see DRAKMA:HTTP-REQUEST
+PARAMETERS  --- List of parameters, see DRAKMA:HTTP-REQUEST
+OAUTH       --- Whether to use oAuth signinf or not if T, will use SOUTH:SIGNED-REQUEST.
+REDIRECT    --- How many redirects to allow, see DRAKMA:HTTP-REQUEST</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:REQUEST"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:REQUEST">REQUEST</a></h4>
+                      <span/>
+                      <span>(URL &amp;REST ARGS &amp;KEY (METHOD GET) PARAMETERS OAUTH (REDIRECT 10)
+     (REQUEST-FUN #'RAW-REQUEST) &amp;ALLOW-OTHER-KEYS)</span>
+                    </code>
+                  </header>
+                  <pre>Wrapper around RAW-REQUEST, automatically parsing the JSON or producing a nice error on failure.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:TO-KEYWORD"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:TO-KEYWORD">TO-KEYWORD</a></h4>
+                      <span/>
+                      <span>(STRING)</span>
+                    </code>
+                  </header>
+                  <pre>Turns a key into a keyword.
+Replaces _ with - and uppercases the string, then interns it
+into the keyword package. This is useful to parse the request
+responses into an alist.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:PREPARE*"/>
+                <article>
+                  <header>
+                    <span>MACRO</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:PREPARE*">PREPARE*</a></h4>
+                      <span/>
+                      <span>(&amp;REST PARAMETER-NAMES)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a PREPARE statement out of the provided variables.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:*OAUTH/ACCESS-TOKEN*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:*OAUTH/ACCESS-TOKEN*">*OAUTH/ACCESS-TOKEN*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:*OAUTH/AUTHORIZE*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:*OAUTH/AUTHORIZE*">*OAUTH/AUTHORIZE*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:*OAUTH/REQUEST-TOKEN*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:*OAUTH/REQUEST-TOKEN*">*OAUTH/REQUEST-TOKEN*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:*TUMBLR-DATETIME-FORMAT*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:*TUMBLR-DATETIME-FORMAT*">*TUMBLR-DATETIME-FORMAT*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre>Local-time format to produce tumblr's datetime format.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-EXTRA:*USER*"/>
+                <article>
+                  <header>
+                    <span>SPECIAL</span>
+                    <code>
+                      <h4><a href="#HUMBLER-EXTRA:*USER*">*USER*</a></h4>
+                      <span/>
+                      <span/>
+                    </code>
+                  </header>
+                  <pre>The central user object storing a reference to whoever is currently logged in.</pre>
                 </article>
               </li></ul>
           </li><li class="package">
@@ -1110,6 +1437,84 @@ a pathname or an octet vector. The file format has to be MP4 with
 audio encoded in AAC.</pre>
                 </article>
               </li><li>
+                <a name="HUMBLER-OBJECTS:ANSWER-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:ANSWER-POST-P">ANSWER-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:AUDIO-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:AUDIO-POST-P">AUDIO-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:BLOG-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:BLOG-P">BLOG-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:CHAT-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:CHAT-POST-P">CHAT-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:DIALOGUE-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:DIALOGUE-P">DIALOGUE-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:LINK-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:LINK-POST-P">LINK-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
                 <a name="HUMBLER-OBJECTS:MAKE-BLOG"/>
                 <article>
                   <header>
@@ -1196,6 +1601,123 @@ audio encoded in AAC.</pre>
                       <h4><a href="#HUMBLER-OBJECTS:MAKE-VIDEO-PLAYER">MAKE-VIDEO-PLAYER</a></h4>
                       <span/>
                       <span>(RESULT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHOTO-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHOTO-P">PHOTO-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHOTO-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHOTO-POST-P">PHOTO-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:PHOTO-SIZE-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:PHOTO-SIZE-P">PHOTO-SIZE-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:POST-P">POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:QUOTE-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:QUOTE-POST-P">QUOTE-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TEXT-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TEXT-POST-P">TEXT-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:USER-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:USER-P">USER-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:VIDEO-PLAYER-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:VIDEO-PLAYER-P">VIDEO-PLAYER-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:VIDEO-POST-P"/>
+                <article>
+                  <header>
+                    <span>FUNCTION</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:VIDEO-POST-P">VIDEO-POST-P</a></h4>
+                      <span/>
+                      <span>(THING)</span>
                     </code>
                   </header>
                   <pre/>
@@ -1466,6 +1988,20 @@ Returns a blog object or NIL if no blog could be found.</pre>
                   <pre/>
                 </article>
               </li><li>
+                <a name="HUMBLER-OBJECTS:COPY"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:COPY">COPY</a></h4>
+                      <span/>
+                      <span>(THING)</span>
+                    </code>
+                  </header>
+                  <pre>Attempts to copy the passed object by creating a new instance of the same class and then calling AUGMENT on it.
+Note that since AUGMENT does not copy fields, this is NOT a deep copy and thus slot values are shared!</pre>
+                </article>
+              </li><li>
                 <a name="HUMBLER-OBJECTS:DASHBOARD"/>
                 <article>
                   <header>
@@ -1473,7 +2009,7 @@ Returns a blog object or NIL if no blog could be found.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:DASHBOARD">DASHBOARD</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET TYPE (AMOUNT 20) (OFFSET 0))</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of posts on your dashboard.
@@ -1569,7 +2105,7 @@ Returns the post object on success, signals an error on failure.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:DRAFTS">DRAFTS</a></h4>
                       <span/>
-                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET BEFORE-ID (BEFORE-ID 0) (OFFSET 0) (AMOUNT 20))</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of drafted posts if possible.
@@ -1794,6 +2330,19 @@ gather the desired amount automatically.</pre>
                       <h4><a href="#HUMBLER-OBJECTS:MOBILE">MOBILE</a></h4>
                       <span/>
                       <span>(OBJECT)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:MY-BLOGS"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:MY-BLOGS">MY-BLOGS</a></h4>
+                      <span/>
+                      <span/>
                     </code>
                   </header>
                   <pre/>
@@ -2170,6 +2719,37 @@ This changes the passed object's slots. See AUGMENT.
 Returns the post object on success, signals an error on failure.</pre>
                 </article>
               </li><li>
+                <a name="HUMBLER-OBJECTS:REPLY"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:REPLY">REPLY</a></h4>
+                      <span/>
+                      <span>(POST ANSWER)</span>
+                    </code>
+                  </header>
+                  <pre/>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:REPOST"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:REPOST">REPOST</a></h4>
+                      <span/>
+                      <span>(POST NEW-BLOG)</span>
+                    </code>
+                  </header>
+                  <pre>Creates a copy of the post object and posts it to the given blog as a new post.
+
+Returns the repost object on success, signals an error on failure.
+
+Note that the slot values of the repost are shared with that of the original post.
+See COPY.</pre>
+                </article>
+              </li><li>
                 <a name="HUMBLER-OBJECTS:SAVE"/>
                 <article>
                   <header>
@@ -2290,6 +2870,19 @@ Returns the post object on success, signals an error on failure.</pre>
 
 If AMOUNT is above twenty, multiple requests are made in order to
 gather the desired amount automatically.</pre>
+                </article>
+              </li><li>
+                <a name="HUMBLER-OBJECTS:TAG"/>
+                <article>
+                  <header>
+                    <span>GENERIC</span>
+                    <code>
+                      <h4><a href="#HUMBLER-OBJECTS:TAG">TAG</a></h4>
+                      <span/>
+                      <span>(TAG &amp;KEY AMOUNT OFFSET BEFORE (AMOUNT 20) (OFFSET 0))</span>
+                    </code>
+                  </header>
+                  <pre/>
                 </article>
               </li><li>
                 <a name="HUMBLER-OBJECTS:TAGS"/>
@@ -2502,226 +3095,6 @@ Returns the post object on success, signals an error on failure.</pre>
                     </code>
                   </header>
                   <pre/>
-                </article>
-              </li></ul>
-          </li><li class="package">
-            <h3>
-              <a name="HUMBLER-EXTRA" href="#HUMBLER-EXTRA">HUMBLER-EXTRA</a>
-              <span class="nicknames">(ORG.TYMOONNEXT.HUMBLER.EXTRA)</span>
-            </h3>
-            <ul><li>
-                <a name="HUMBLER-EXTRA:FORMAT-TUMBLR-DATE"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:FORMAT-TUMBLR-DATE">FORMAT-TUMBLR-DATE</a></h4>
-                      <span/>
-                      <span>(TIMESTAMP)</span>
-                    </code>
-                  </header>
-                  <pre>Returns a string version of the local-time timestamp using the proper timezone and format.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:FROM-KEYWORD"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:FROM-KEYWORD">FROM-KEYWORD</a></h4>
-                      <span/>
-                      <span>(KEYWORD)</span>
-                    </code>
-                  </header>
-                  <pre>Turns a keyword into a key.
-Replaces - with _ and downcases the keyword as a string.
-This is useful to parse the request parameters from the
-lisp representation into the api representation.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:GET-UNIX-TIME"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:GET-UNIX-TIME">GET-UNIX-TIME</a></h4>
-                      <span/>
-                      <span/>
-                    </code>
-                  </header>
-                  <pre>Returns an integer representing the seconds since the unix epoch.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:LOGIN"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:LOGIN">LOGIN</a></h4>
-                      <span/>
-                      <span/>
-                    </code>
-                  </header>
-                  <pre>Performs a SERVER login with South.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:LOGOUT"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:LOGOUT">LOGOUT</a></h4>
-                      <span/>
-                      <span/>
-                    </code>
-                  </header>
-                  <pre>Resets South's access tokens, thus logging you out.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:PAGEINATE"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:PAGEINATE">PAGEINATE</a></h4>
-                      <span/>
-                      <span>(FUNCTION OFFSET AMOUNT &amp;REST ARGS)</span>
-                    </code>
-                  </header>
-                  <pre>Gather results from FUNCTION until AMOUNT is gathered.
-The function needs to accept both OFFSET and AMOUNT keywords.
-As per default for tumblr calls, the objects are gathered in
-steps of twenty.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:PARSE-TUMBLR-DATE"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:PARSE-TUMBLR-DATE">PARSE-TUMBLR-DATE</a></h4>
-                      <span/>
-                      <span>(DATESTRING)</span>
-                    </code>
-                  </header>
-                  <pre>Parses a tumblr datestring (2014-08-01 23:52:31 GMT) into a local-time timestamp.
-If it fails to parse, the datestring is returned instead.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:PREPARE"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:PREPARE">PREPARE</a></h4>
-                      <span/>
-                      <span>(PARAMETERS)</span>
-                    </code>
-                  </header>
-                  <pre>Filters out empty key-value pairs and turns all values
-into strings, ready to be sent out as request parameters.
-This function is DESTRUCTIVE.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:PRINT-SLOTS"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:PRINT-SLOTS">PRINT-SLOTS</a></h4>
-                      <span/>
-                      <span>(OBJECT)</span>
-                    </code>
-                  </header>
-                  <pre>Prints all slots of the object and their values.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:RAW-REQUEST"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:RAW-REQUEST">RAW-REQUEST</a></h4>
-                      <span/>
-                      <span>(URL &amp;KEY (METHOD GET) PARAMETERS OAUTH (REDIRECT 10) &amp;ALLOW-OTHER-KEYS)</span>
-                    </code>
-                  </header>
-                  <pre>Performs a raw request, with JSON as text.
-
-URL         --- Url to request, see DRAKMA:HTTP-REQUEST
-METHOD      --- Request method, see DRAKMA:HTTP-REQUEST
-PARAMETERS  --- List of parameters, see DRAKMA:HTTP-REQUEST
-OAUTH       --- Whether to use oAuth signinf or not if T, will use SOUTH:SIGNED-REQUEST.
-REDIRECT    --- How many redirects to allow, see DRAKMA:HTTP-REQUEST</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:REQUEST"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:REQUEST">REQUEST</a></h4>
-                      <span/>
-                      <span>(URL &amp;REST ARGS &amp;KEY (METHOD GET) PARAMETERS OAUTH (REDIRECT 10)
-     (REQUEST-FUN #'RAW-REQUEST) &amp;ALLOW-OTHER-KEYS)</span>
-                    </code>
-                  </header>
-                  <pre>Wrapper around RAW-REQUEST, automatically parsing the JSON or producing a nice error on failure.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:TO-KEYWORD"/>
-                <article>
-                  <header>
-                    <span>FUNCTION</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:TO-KEYWORD">TO-KEYWORD</a></h4>
-                      <span/>
-                      <span>(STRING)</span>
-                    </code>
-                  </header>
-                  <pre>Turns a key into a keyword.
-Replaces _ with - and uppercases the string, then interns it
-into the keyword package. This is useful to parse the request
-responses into an alist.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:PREPARE*"/>
-                <article>
-                  <header>
-                    <span>MACRO</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:PREPARE*">PREPARE*</a></h4>
-                      <span/>
-                      <span>(&amp;REST PARAMETER-NAMES)</span>
-                    </code>
-                  </header>
-                  <pre>Creates a PREPARE statement out of the provided variables.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:*TUMBLR-DATETIME-FORMAT*"/>
-                <article>
-                  <header>
-                    <span>SPECIAL</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:*TUMBLR-DATETIME-FORMAT*">*TUMBLR-DATETIME-FORMAT*</a></h4>
-                      <span/>
-                      <span/>
-                    </code>
-                  </header>
-                  <pre>Local-time format to produce tumblr's datetime format.</pre>
-                </article>
-              </li><li>
-                <a name="HUMBLER-EXTRA:*USER*"/>
-                <article>
-                  <header>
-                    <span>SPECIAL</span>
-                    <code>
-                      <h4><a href="#HUMBLER-EXTRA:*USER*">*USER*</a></h4>
-                      <span/>
-                      <span/>
-                    </code>
-                  </header>
-                  <pre>The central user object storing a reference to whoever is currently logged in.</pre>
                 </article>
               </li></ul>
           </li></ul>
