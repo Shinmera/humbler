@@ -78,7 +78,8 @@
    #:my-submissions
    #:my-drafts
    #:my-queue
-   #:my-posts)
+   #:my-posts
+   #:tag)
   ;; object-bridge.lisp
   (:export
    #:make-photo
@@ -203,7 +204,23 @@
    
    #:video-player
    #:width
-   #:embed-code))
+   #:embed-code
+
+   #:blog-p
+   #:user-p
+   #:post-p
+   #:photo-p
+   #:photo-size-p
+   #:dialogue-p
+   #:video-player-p
+   #:video-post-p
+   #:audio-post-p
+   #:chat-post-p
+   #:link-post-p
+   #:quote-post-p
+   #:photo-post-p
+   #:text-post-p
+   #:answer-post-p))
 
 (defpackage #:humbler-extra
   (:nicknames #:org.tymoonnext.humbler.extra)
@@ -228,6 +245,8 @@
    #:format-tumblr-date
    #:parse-tumblr-date
    #:pageinate
+   #:pageinate-id
+   #:pageinate-time
    #:print-slots))
 
 (defpackage #:humbler
