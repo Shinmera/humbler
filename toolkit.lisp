@@ -162,10 +162,11 @@ The returned set may be less than the requested amount."
                         (T
                          (subseq result offset (+ offset amount)))))))
 
-(defun print-slots (object)
+(defun print-slots (object &key (omit-unbound T))
   "Prints all slots of the object and their values."
   (loop for slotdef in (c2mop:class-slots (class-of object))
         for slot = (c2mop:slot-definition-name slotdef)
-        do (format T "~a: ~:[UNBOUND~;~:*~s~]~%"
-                   slot (when (slot-boundp object slot)
-                          (slot-value object slot)))))
+        do (if (slot-boundp object slot)
+               (format T "~a: ~s~%" slot (slot-value object slot))
+               (unless omit-unbound
+                 (format T "~a: UNBOUND~%" slot)))))
