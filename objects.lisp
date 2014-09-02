@@ -146,3 +146,13 @@
   (print-unreadable-object (video-player stream :type T :identity T)
     (format stream "~a" (width video-player)))
   video-player)
+
+(defmacro define-predicates (&rest classes)
+  `(progn
+     ,@(loop for class in classes
+             collect `(defun ,(intern (format NIL "~a-P" class)) (thing) (typep thing ',class)))))
+
+(define-predicates
+    blog user post photo photo-size dialogue video-player
+  video-post audio-post chat-post link-post
+  quote-post photo-post text-post answer-post)
