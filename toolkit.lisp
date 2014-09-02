@@ -155,12 +155,39 @@ The returned set may be less than the requested amount."
           while current-set
           nconcing current-set into result
           ;; We might have gathered too much, cut back.
-          finally (cond ((<= current-amount offset)
-                         ())
-                        ((<= current-amount (+ offset amount))
-                         (subseq result offset))
-                        (T
-                         (subseq result offset (+ offset amount)))))))
+          finally (return
+                    (cond ((<= current-amount offset)
+                           ())
+                          ((<= current-amount (+ offset amount))
+                           (subseq result offset))
+                          (T
+                           (subseq result offset (+ offset amount))))))))
+
+(defun pageinate-time (function before-time offset amount &rest args)
+  "Gather results from FUNCTION until AMOUNT is gathered.
+The function needs to accept a BEFORE keyword and return
+a list of objects that have a TIMESTAMP slot accessible
+through the TIMESTAMP reader.
+
+The returned set may be less than the requested amount."
+  (flet ((call (before)
+           (apply function :before before args)))
+    (loop for current-amount = 0
+            then (+ current-amount (length current-set))
+          for current-time = before-time
+            then (timestamp (car (last current-set)))
+          until (<= (+ amount offset) current-amount)
+          for current-set = (call current-time)
+          while current-set
+          nconcing current-set into result
+          ;; We might have gathered too much, cut back.
+          finally (return
+                    (cond ((<= current-amount offset)
+                           ())
+                          ((<= current-amount (+ offset amount))
+                           (subseq result offset))
+                          (T
+                           (subseq result offset (+ offset amount))))))))
 
 (defun print-slots (object &key (omit-unbound T))
   "Prints all slots of the object and their values."
