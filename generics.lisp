@@ -51,6 +51,12 @@
       (error "Cannot augment ~a with ~a, different post-subclasses are incompatible." target source))
     (call-next-method target source)))
 
+(defgeneric copy (thing)
+  (:method (thing)
+    (let ((copy (make-instance (class-name (class-of thing)))))
+      (augment copy thing)
+      copy)))
+
 (defgeneric blog (name)
   (:method ((blog blog))
     (blog (name blog)))
@@ -67,15 +73,19 @@
 
 (defgeneric follow (blog)
   (:method ((blog blog))
-    (follow (name blog)))
+    (follow (name blog))
+    blog)
   (:method ((blog string))
-    (user/follow blog)))
+    (user/follow blog)
+    blog))
 
 (defgeneric unfollow (blog)
   (:method ((blog blog))
-    (unfollow (name blog)))
+    (unfollow (name blog))
+    blog)
   (:method ((blog string))
-    (user/unfollow blog)))
+    (user/unfollow blog)
+    blog))
 
 (defgeneric likes (blog &key amount offset)
   (:method ((blog blog) &key (amount 20) (offset 0))
@@ -132,28 +142,38 @@
 
 (defgeneric post (id &optional blog-name)
   (:method ((post post) &optional blog-name)
-    (post (id post) (blog-name post)))
+    (post (id post) (or blog-name (blog-name post))))
   (:method ((id fixnum) &optional blog-name)
+    (assert (not (null blog-name))
+            () "Blog-name required when fetching a post by ID.")
     (make-post (blog/posts blog-name :id id))))
 
 (defun %edit-post (post &rest args)
   (apply
    #'blog/post/edit
    (blog-name post) (id post)
-   :tags (tags post) :state (state post) :tweet (tweet post)
-   :date (date post) :format (post-format post) :slug (slug post)
+   :tweet (tweet post) :tags (tags post)
+   :slug (slug post) :date (date post)
+   :state (or (state post) :published)
+   :format (or (post-format post) (default-post-format *user*) :html)
    args))
 
 (defun %save-post (post main &rest args)
-  (apply
-   (let ((name (string (class-name (class-of post)))))
-     ;; hackery!
-     (find-symbol (format NIL "BLOG/POST-~a"
-                          (subseq name 0 (position #\- name)))))
-   (blog-name post) main
-   :tags (tags post) :state (state post) :tweet (tweet post)
-   :date (date post) :format (post-format post) :slug (slug post)
-   args))
+  (setf (slot-value post 'blog-name)
+        (or (blog-name post) (name *user*)))
+  (setf (slot-value post 'id)
+        (apply
+         (let ((name (string (class-name (class-of post)))))
+           ;; hackery!
+           (find-symbol (format NIL "BLOG/POST-~a"
+                                (subseq name 0 (position #\- name)))))
+         (blog-name post) main
+         :tweet (tweet post) :tags (tags post)
+         :slug (slug post) :date (date post)
+         :state (or (state post) :published)
+         :format (or (post-format post) (default-post-format *user*) :html)
+         args))
+  post)
 
 (defgeneric save (post)
   (:method ((post text-post))
@@ -171,7 +191,7 @@
                     :photo (file post)
                     :caption (caption post)
                     :link (source-url post))
-        (%save-post post (photos post)
+        (%save-post post (file post)
                     :caption (caption post)
                     :link (source-url post)))
     post)
@@ -226,6 +246,16 @@
   (:method ((post answer-post))
     (error "I don't know how to handle this (yet), the documentation doesn't say anything.")))
 
+(defgeneric repost (post new-blog)
+  (:method ((post post) (new-blog blog))
+    (repost post (name new-blog)))
+  (:method ((post post) (new-blog string))
+    (let ((repost (copy post)))
+      (slot-makunbound repost 'id)
+      (setf (slot-value repost 'blog-name) new-blog)
+      (save repost)
+      repost)))
+
 (defgeneric destroy (post)
   (:method ((post post))
     (blog/post/delete (blog-name post) (id post))
@@ -265,6 +295,10 @@
 (defgeneric myself ()
   (:method ()
     (make-user (user/info))))
+
+(defgeneric my-blogs ()
+  (:method ()
+    (blogs *user*)))
 
 (defgeneric my-followers (&key amount offset)
   (:method (&key (amount 20) (offset 0))
