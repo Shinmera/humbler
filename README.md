@@ -45,6 +45,42 @@ Multiple Users, Multiple South Applications
 -------------------------------------------
 If you need to allow multiple users or south-using applications simultaneously, you'll need to handle the login and environment establishment yourself. Have a look at the [South](http://shinmera.github.io/south/) documentation for more information on how to go about this. This functionality is not included in Humbler directly as it is too complex to handle in a generic way.
 
+More Examples
+-------------
+Post to all your blogs:
+
+```
+(dolist (blog (my-blogs))
+  (repost (make-instance 'text-post :body "Hi!") blog))
+```
+
+Reblog the last 100 photos from a blog:
+
+```
+(mapcar #'reblog (posts "cool-photo-blog" :type :photo :amount 100))
+```
+
+View the most recent text posts from a tag:
+
+```
+(mapcar #'body (remove-if-not #'text-post-p (tag "interesting-tag)))
+```
+
+Delete all your drafts:
+
+```
+(mapcar #'destroy (my-drafts :amount T))
+```
+
+Interactively reply to all your asks:
+
+```
+(dolist (sub (my-submissions :amount T))
+  (when (answer-post-p sub)
+    (format T "~a: ~a~%" (asking-name sub) (question sub))
+    (reply sub (read-line))))
+```
+
 Further Reading
 ---------------
 * The [symbol index](http://shinmera.github.io/humbler/).
