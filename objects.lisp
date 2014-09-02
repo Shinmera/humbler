@@ -57,9 +57,9 @@
    (liked :initarg :liked :reader liked)
    (state :initarg :state :accessor state)
    ;; Posting-only props.
-   (post-format :initarg :post-format :accessor post-format)
-   (tweet :initarg :tweet :accessor tweet)
-   (slug :initarg :slug :accessor slug)))
+   (post-format :initarg :post-format :initform NIL :accessor post-format)
+   (tweet :initarg :tweet :initform NIL :accessor tweet)
+   (slug :initarg :slug :initform NIL :accessor slug)))
 
 (defmethod print-object ((post post) stream)
   (print-unreadable-object (post stream :type T :identity T)
