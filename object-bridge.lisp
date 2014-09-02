@@ -13,19 +13,19 @@
   (aget field alist))
 
 (defun kaget (alist field)
-  (let ((value (saget field alist)))
+  (let ((value (saget alist field)))
     (if (eq value 'undefined)
         'undefined
         (find-symbol (string-upcase value) "KEYWORD"))))
 
 (defun taget (alist field)
-  (let ((value (saget field alist)))
+  (let ((value (saget alist field)))
     (if (eq value 'undefined)
         'undefined
         (cl-ppcre:split "\\s*,\\s*" value))))
 
 (defun daget (alist field)
-  (let ((value (saget field alist)))
+  (let ((value (saget alist field)))
     (if (eq value 'undefined)
         'undefined
         (parse-tumblr-date value))))
