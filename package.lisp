@@ -51,6 +51,7 @@
    #:blog=
    #:post=
    #:augment
+   #:copy
    #:blog
    #:followers
    #:follow
@@ -62,6 +63,7 @@
    #:posts
    #:post
    #:save
+   #:repost
    #:destroy
    #:reblog
    #:like
@@ -70,6 +72,7 @@
    #:dashboard
    #:following
    #:myself
+   #:my-blogs
    #:my-followers
    #:my-likes
    #:my-submissions
