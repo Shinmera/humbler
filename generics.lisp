@@ -68,7 +68,7 @@
     (followers (name blog) :amount amount :offset offset))
   (:method ((blog string) &key (amount 20) (offset 0))
     (pageinate #'(lambda (&rest args)
-                   (mapcar #'make-user (apply #'blog/followers args)))
+                   (mapcar #'make-user (apply #'blog/followers blog args)))
                offset amount)))
 
 (defgeneric follow (blog)
