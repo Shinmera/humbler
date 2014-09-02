@@ -122,9 +122,14 @@ If it fails to parse, the datestring is returned instead."
   "Gather results from FUNCTION until AMOUNT is gathered.
 The function needs to accept both OFFSET and LIMIT keywords.
 As per default for tumblr calls, the objects are gathered in
-steps of twenty."
+steps of twenty.
+
+AMOUNT can be a positive integer or T for as many as possible.
+
+The returned set may be less than the requested amount."
   (flet ((call (offset amount)
            (apply function :offset offset :limit amount args)))
+    (when (eq amount T) (setf amount most-positive-fixnum))
     (if (<= amount 20)
         (call offset amount)
         (loop for current-amount = amount
@@ -143,9 +148,12 @@ The function needs to accept a BEFORE-ID keyword and return
 a list of objects that have an ID slot accessible through
 the ID reader.
 
+AMOUNT can be a positive integer or T for as many as possible.
+
 The returned set may be less than the requested amount."
   (flet ((call (before-id)
            (apply function :before-id before-id args)))
+    (when (eq amount T) (setf amount most-positive-fixnum))
     (loop for current-amount = 0
             then (+ current-amount (length current-set))
           for current-id = before-id
@@ -169,9 +177,12 @@ The function needs to accept a BEFORE keyword and return
 a list of objects that have a TIMESTAMP slot accessible
 through the TIMESTAMP reader.
 
+AMOUNT can be a positive integer or T for as many as possible.
+
 The returned set may be less than the requested amount."
   (flet ((call (before)
            (apply function :before before args)))
+    (when (eq amount T) (setf amount most-positive-fixnum))
     (loop for current-amount = 0
             then (+ current-amount (length current-set))
           for current-time = before-time
