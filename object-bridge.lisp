@@ -111,6 +111,11 @@
     (map-field :source-title :source-title #'naget)
     (map-field :state :state #'kaget)))
 
+;; Here we define an extra keyword called 'submission', which is
+;; an additionally possible STATE for a post, but isn't allowed
+;; when making a post.
+:submission
+
 (defun make-post (result)
   (let ((post (make-raw-post result)))
     (change-class
