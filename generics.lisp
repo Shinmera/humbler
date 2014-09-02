@@ -109,11 +109,12 @@
             until (<= current-amount 0)
             for current-set = (call current-offset)
             while current-set
-            nconcing current-set into result
+            nconcing (mapcar #'make-post current-set) into result
             ;; We might have gathered too much, cut back.
-            finally (if (< current-amount 0)
-                        (subseq result 0 amount)
-                        result)))))
+            finally (return
+                      (if (< current-amount 0)
+                          (subseq result 0 amount)
+                          result))))))
 
 ;; needs special handling since there is no 'offset' or 'amount'.
 (defgeneric drafts (blog &key amount offset before-id)
@@ -244,7 +245,11 @@
     post)
 
   (:method ((post answer-post))
-    (error "I don't know how to handle this (yet), the documentation doesn't say anything.")))
+    (if (slot-boundp post 'id)
+        (%edit-post post
+                    :answer (answer post))
+        (error "I don't know how to handle this (yet), the documentation doesn't say anything."))
+    post))
 
 (defgeneric repost (post new-blog)
   (:method ((post post) (new-blog blog))
@@ -275,6 +280,12 @@
   (:method ((post post))
     (user/unlike (id post) (reblog-key post))
     post))
+
+(defgeneric reply (post answer)
+  (:method ((post answer-post) answer)
+    (setf (answer post) answer
+          (state post) :published)
+    (save post)))
 
 (defgeneric refresh (post)
   (:method ((post post))
