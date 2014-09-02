@@ -50,11 +50,11 @@
 
 <pre><code>(<a href="#HUMBLER-API:BLOG/POST-TEXT">humbler:blog/post-text</a> &quot;my-blog&quot; &quot;Hey, testing this Common Lisp library called Humbler...&quot; :title &quot;Whoa nelly!&quot;)
 
-(<a href="#HUMBLER-OBJECTS:SAVE">humbler:save</a> (<a href="http://l1sp.org/cl/MAKE-INSTANCE">make-instance</a> 'humbler:text-post :body &quot;Nobody reads text posts anyway.&quot; :title &quot;Welp.&quot;))</code></pre>
+(<a href="#HUMBLER-OBJECTS:SAVE">humbler:save</a> (<a href="http://l1sp.org/cl/make-instance">make-instance</a> 'humbler:text-post :body &quot;Nobody reads text posts anyway.&quot; :title &quot;Welp.&quot;))</code></pre>
 
 <p>While the low-level functions have some limitations and oddities about them (max 20 results on a listing every call, strange inconsistencies, partial objects) due to the way Tumblr's API is made, the high-level functions try to smoothen over these issues so you don't have to worry about them. If for some reason you hate automatisation or how this abstraction works, you are of course free to build your own on top of the bare API calls though.</p>
 
-<p>Humbler's symbols are split into three packages: <code>HUMBLER-API</code> which contains the API mapping functions, <code>HUMBLER-OBJECTS</code> containing the object and generic function interface, and finally <code>HUMBLER-EXTRA</code> with some functions to help deal with Tumbler (only programmatically, not mentally).</p>
+<p>Humbler's symbols are split into three packages: <code>HUMBLER-API</code> which contains the API mapping functions, <code>HUMBLER-OBJECTS</code> containing the object and generic function interface, and finally <code>HUMBLER-EXTRA</code> with some functions to help deal with Tumblr (only programmatically, not mentally).</p>
 
 <h2>Deferred Slots</h2>
 
@@ -68,27 +68,27 @@
 
 <p>Post to all your blogs:</p>
 
-<pre><code>(<a href="http://l1sp.org/cl/DOLIST">dolist</a> (<a href="#HUMBLER-OBJECTS:BLOG">blog</a> (<a href="#HUMBLER-OBJECTS:MY-BLOGS">my-blogs</a>))
-  (<a href="#HUMBLER-OBJECTS:REPOST">repost</a> (<a href="http://l1sp.org/cl/MAKE-INSTANCE">make-instance</a> 'text-post :body &quot;Hi!&quot;) blog))</code></pre>
+<pre><code>(<a href="http://l1sp.org/cl/dolist">dolist</a> (<a href="#HUMBLER-OBJECTS:BLOG">blog</a> (<a href="#HUMBLER-OBJECTS:MY-BLOGS">my-blogs</a>))
+  (<a href="#HUMBLER-OBJECTS:REPOST">repost</a> (<a href="http://l1sp.org/cl/make-instance">make-instance</a> 'text-post :body &quot;Hi!&quot;) blog))</code></pre>
 
 <p>Reblog the last 100 photos from a blog:</p>
 
-<pre><code>(<a href="http://l1sp.org/cl/MAPCAR">mapcar</a> #'reblog (<a href="#HUMBLER-OBJECTS:POSTS">posts</a> &quot;cool-photo-blog&quot; :type :photo :amount 100))</code></pre>
+<pre><code>(<a href="http://l1sp.org/cl/mapcar">mapcar</a> #'reblog (<a href="#HUMBLER-OBJECTS:POSTS">posts</a> &quot;cool-photo-blog&quot; :type :photo :amount 100))</code></pre>
 
 <p>View the most recent text posts from a tag:</p>
 
-<pre><code>(<a href="http://l1sp.org/cl/MAPCAR">mapcar</a> #'body (<a href="http://l1sp.org/cl/REMOVE-IF-NOT">remove-if-not</a> #'text-post-p (<a href="#HUMBLER-OBJECTS:TAG">tag</a> &quot;interesting-tag)))</code></pre>
+<pre><code>(<a href="http://l1sp.org/cl/mapcar">mapcar</a> #'body (<a href="http://l1sp.org/cl/remove-if-not">remove-if-not</a> #'text-post-p (<a href="#HUMBLER-OBJECTS:TAG">tag</a> &quot;interesting-tag)))</code></pre>
 
 <p>Delete all your drafts:</p>
 
-<pre><code>(<a href="http://l1sp.org/cl/MAPCAR">mapcar</a> #'destroy (<a href="#HUMBLER-OBJECTS:MY-DRAFTS">my-drafts</a> :amount T))</code></pre>
+<pre><code>(<a href="http://l1sp.org/cl/mapcar">mapcar</a> #'destroy (<a href="#HUMBLER-OBJECTS:MY-DRAFTS">my-drafts</a> :amount T))</code></pre>
 
 <p>Interactively reply to all your asks:</p>
 
-<pre><code>(<a href="http://l1sp.org/cl/DOLIST">dolist</a> (sub (<a href="#HUMBLER-OBJECTS:MY-SUBMISSIONS">my-submissions</a> :amount T))
-  (<a href="http://l1sp.org/cl/WHEN">when</a> (<a href="#HUMBLER-OBJECTS:ANSWER-POST-P">answer-post-p</a> sub)
-    (<a href="http://l1sp.org/cl/FORMAT">format</a> T &quot;~a: ~a~%&quot; (<a href="#HUMBLER-OBJECTS:ASKING-NAME">asking-name</a> sub) (<a href="#HUMBLER-OBJECTS:QUESTION">question</a> sub))
-    (<a href="#HUMBLER-OBJECTS:REPLY">reply</a> sub (<a href="http://l1sp.org/cl/READ-LINE">read-line</a>))))</code></pre>
+<pre><code>(<a href="http://l1sp.org/cl/dolist">dolist</a> (sub (<a href="#HUMBLER-OBJECTS:MY-SUBMISSIONS">my-submissions</a> :amount T))
+  (<a href="http://l1sp.org/cl/when">when</a> (<a href="#HUMBLER-OBJECTS:ANSWER-POST-P">answer-post-p</a> sub)
+    (<a href="http://l1sp.org/cl/format">format</a> T &quot;~a: ~a~%&quot; (<a href="#HUMBLER-OBJECTS:ASKING-NAME">asking-name</a> sub) (<a href="#HUMBLER-OBJECTS:QUESTION">question</a> sub))
+    (<a href="#HUMBLER-OBJECTS:REPLY">reply</a> sub (<a href="http://l1sp.org/cl/read-line">read-line</a>))))</code></pre>
 
 <h2>Further Reading</h2>
 

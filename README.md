@@ -35,7 +35,7 @@ Humbler offers an object-oriented interface that tries to take a lot of manual w
 
 While the low-level functions have some limitations and oddities about them (max 20 results on a listing every call, strange inconsistencies, partial objects) due to the way Tumblr's API is made, the high-level functions try to smoothen over these issues so you don't have to worry about them. If for some reason you hate automatisation or how this abstraction works, you are of course free to build your own on top of the bare API calls though.
 
-Humbler's symbols are split into three packages: `HUMBLER-API` which contains the API mapping functions, `HUMBLER-OBJECTS` containing the object and generic function interface, and finally `HUMBLER-EXTRA` with some functions to help deal with Tumbler (only programmatically, not mentally).
+Humbler's symbols are split into three packages: `HUMBLER-API` which contains the API mapping functions, `HUMBLER-OBJECTS` containing the object and generic function interface, and finally `HUMBLER-EXTRA` with some functions to help deal with Tumblr (only programmatically, not mentally).
 
 Deferred Slots
 --------------
