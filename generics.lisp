@@ -323,3 +323,9 @@
 (defgeneric my-posts (&key type tag amount offset)
   (:method (&key type tag (amount 20) (offset 0))
     (posts *user* :type type :tag tag :amount amount :offset offset)))
+
+(defgeneric tag (tag &key amount offset before)
+  (:method (tag &key (amount 20) (offset 0) before)
+    (pageinate-time #'(lambda (&rest args)
+                        (mapcar #'make-post (apply #'tagged tag args)))
+                    before offset amount)))
