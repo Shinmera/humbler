@@ -101,24 +101,15 @@
 
 (defun make-raw-post (result)
   (make-from-result result 'post
-    :id :blog-name :post-url :timestamp :reblog-key :liked
+    :id :blog-name :post-url :timestamp :reblog-key :liked :tags
     (map-field :post-type :type #'kaget)
     (map-field :date :date #'daget)
     (map-field :text-format :format #'kaget)
-    (map-field :tags :tags #'taget)
     (map-field :bookmarklet :bookmarklet #'naget)
     (map-field :mobile :mobile #'naget)
     (map-field :source-url :source-url #'naget)
     (map-field :source-title :source-title #'naget)
-    (map-field :state :state #'kaget)
-    ;; post-specific fields
-    :title :body :caption :width :height :text :source :url
-    :description :player :album-art :artist :album :track-name
-    :track-number :year :asking-name :asking-url :question :answer
-    (map-field-list :photos :photos #'make-photo)
-    (map-field-list :dialogue :dialogue #'make-dialogue)
-    (map-field :plays-count :plays)
-    (map-field-list :players :player #'make-video-player)))
+    (map-field :state :state #'kaget)))
 
 (defun make-post (result)
   (let ((post (make-raw-post result)))
@@ -131,4 +122,19 @@
             (:chat 'chat-post)
             (:audio 'audio-post)
             (:video 'video-post)
-            (:answer 'answer-post)))))
+            (:answer 'answer-post)))
+    (make-from-result result post
+      ;; post-specific fields
+      :title :body :caption :width :height :text :source :url
+      :description :album-art :artist :album :track-name
+      :track-number :year :asking-name :asking-url :question :answer
+      (map-field-list :photos :photos #'make-photo)
+      (map-field-list :dialogue :dialogue #'make-dialogue)
+      (map-field :plays-count :plays))
+    ;; Special handling for audio and video players
+    ;; since they have the same field name but vastly different
+    ;; results. Good job, tumblr.
+    (case (post-type post)
+      (:audio (make-from-result result post :player))
+      (:video (make-from-result result post (map-field-list :players :player #'make-video-player))))
+    post))
