@@ -68,6 +68,7 @@
    #:reblog
    #:like
    #:unlike
+   #:reply
    #:refresh
    #:dashboard
    #:following
