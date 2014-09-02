@@ -133,7 +133,33 @@ steps of twenty."
                 then (+ current-offset (length current-set))
               until (<= current-amount 0)
               for current-set = (call current-offset current-amount)
+              while current-set
               nconcing current-set))))
+
+(defun pageinate-id (function before-id offset amount &rest args)
+  "Gather results from FUNCTION until AMOUNT is gathered.
+The function needs to accept a BEFORE-ID keyword and return
+a list of objects that have an ID slot accessible through
+the ID reader.
+
+The returned set may be less than the requested amount."
+  (flet ((call (before-id)
+           (apply function :before-id before-id args)))
+    (loop for current-amount = 0
+            then (+ current-amount (length current-set))
+          for current-id = before-id
+            then (id (car (last current-set)))
+          until (<= (+ amount offset) current-amount)
+          for current-set = (call current-id)
+          while current-set
+          nconcing current-set into result
+          ;; We might have gathered too much, cut back.
+          finally (cond ((<= current-amount offset)
+                         ())
+                        ((<= current-amount (+ offset amount))
+                         (subseq result offset))
+                        (T
+                         (subseq result offset (+ offset amount)))))))
 
 (defun print-slots (object)
   "Prints all slots of the object and their values."
