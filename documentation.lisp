@@ -533,6 +533,10 @@ audio encoded in AAC.")
 (docf augment
       "Fills up slots in TARGET with information from SOURCE.")
 
+(docf copy
+      "Attempts to copy the passed object by creating a new instance of the same class and then calling AUGMENT on it.
+Note that since AUGMENT does not copy fields, this is NOT a deep copy and thus slot values are shared!")
+
 (docf blog
       "Tries to fetch the blog object given by NAME.
 
@@ -599,6 +603,14 @@ Returns a post object or NIL if no post can be found.")
       "Creates or edits the given post with the new values.
 
 Returns the post object on success, signals an error on failure.")
+
+(docf repost
+      "Creates a copy of the post object and posts it to the given blog as a new post.
+
+Returns the repost object on success, signals an error on failure.
+
+Note that the slot values of the repost are shared with that of the original post.
+See COPY.")
 
 (docf destroy
       "Delete the given post.
