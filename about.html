@@ -8,7 +8,7 @@
       h1{display:inline-block;font-size: 28pt;margin-bottom:0;}
       code{font-family: Consolas, Inconsolata, monospace;}
       h4{display: inline-block;margin:0;padding:0;}
-      ul{list-style: none;}
+      #symbol-index ul{list-style: none;}
       .package li{margin-bottom: 20px;}
       .package pre{margin: 0 0 0 10px; white-space: pre-wrap;}
       .package .nicknames{font-size: 12pt; font-weight: normal;}
@@ -105,7 +105,7 @@
         <h2>Copyright</h2>
         <span>humbler</span> is licensed under the <span><a href="https://tldrlegal.com/search?q=Artistic">Artistic</a></span> license and ©<span>2014</span> <span>Nicolas Hafner &lt;shinmera@tymoon.eu&gt;</span>. This library can be obtained on <a href="https://github.com/Shinmera/humbler">https://github.com/Shinmera/humbler</a>.
       </article>
-      <article>
+      <article id="symbol-index">
         <h2>Package Index</h2>
         <ul><li class="package">
             <h3>
@@ -520,7 +520,10 @@ Returns the post's ID.</pre>
       SLUG)</span>
                     </code>
                   </header>
-                  <pre/>
+                  <pre>Edit the post with the given ID.
+See the individual BLOG/POST-* functions for the argument explanations.
+
+Returns the post ID.</pre>
                 </article>
               </li><li>
                 <a name="HUMBLER-API:BLOG/POST/REBLOG"/>
@@ -2009,7 +2012,7 @@ Note that since AUGMENT does not copy fields, this is NOT a deep copy and thus s
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:DASHBOARD">DASHBOARD</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET TYPE (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET TYPE)</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of posts on your dashboard.
@@ -2105,7 +2108,7 @@ Returns the post object on success, signals an error on failure.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:DRAFTS">DRAFTS</a></h4>
                       <span/>
-                      <span>(BLOG &amp;KEY AMOUNT OFFSET BEFORE-ID (BEFORE-ID 0) (OFFSET 0) (AMOUNT 20))</span>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET BEFORE-ID)</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of drafted posts if possible.
@@ -2188,7 +2191,7 @@ Returns the blog on success, signals an error on failure.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:FOLLOWERS">FOLLOWERS</a></h4>
                       <span/>
-                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Returns a list of USER objects that follow the given blog.
@@ -2204,7 +2207,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:FOLLOWING">FOLLOWING</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of blogs that you are following.
@@ -2300,7 +2303,7 @@ Returns the post object on success, signals an error on failure.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:LIKES">LIKES</a></h4>
                       <span/>
-                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of liked posts if possible.
@@ -2355,7 +2358,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:MY-DRAFTS">MY-DRAFTS</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Shorthand for (DRAFTS *user*)</pre>
@@ -2368,7 +2371,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:MY-FOLLOWERS">MY-FOLLOWERS</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Shorthand for (FOLLOWERS *user*)</pre>
@@ -2381,7 +2384,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:MY-LIKES">MY-LIKES</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Shorthand for (LIKES *user*)</pre>
@@ -2394,7 +2397,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:MY-POSTS">MY-POSTS</a></h4>
                       <span/>
-                      <span>(&amp;KEY TYPE TAG AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY TYPE TAG AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Shorthand for (POSTS *user*)</pre>
@@ -2407,7 +2410,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:MY-QUEUE">MY-QUEUE</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Shorthand for (QUEUE *user*)</pre>
@@ -2420,7 +2423,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:MY-SUBMISSIONS">MY-SUBMISSIONS</a></h4>
                       <span/>
-                      <span>(&amp;KEY AMOUNT OFFSET (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(&amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Shorthand for (SUBMISSIONS *user*)</pre>
@@ -2622,7 +2625,7 @@ Returns a post object or NIL if no post can be found.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:POSTS">POSTS</a></h4>
                       <span/>
-                      <span>(BLOG &amp;KEY TYPE TAG AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                      <span>(BLOG &amp;KEY TYPE TAG AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of public posts filtered by TYPE and TAG.
@@ -2651,7 +2654,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:QUEUE">QUEUE</a></h4>
                       <span/>
-                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of queued posts if possible.
@@ -2863,7 +2866,7 @@ Returns the post object on success, signals an error on failure.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:SUBMISSIONS">SUBMISSIONS</a></h4>
                       <span/>
-                      <span>(BLOG &amp;KEY AMOUNT OFFSET (OFFSET 0) (AMOUNT 20))</span>
+                      <span>(BLOG &amp;KEY AMOUNT OFFSET)</span>
                     </code>
                   </header>
                   <pre>Retrieve a list of submitted posts if possible.
@@ -2879,7 +2882,7 @@ gather the desired amount automatically.</pre>
                     <code>
                       <h4><a href="#HUMBLER-OBJECTS:TAG">TAG</a></h4>
                       <span/>
-                      <span>(TAG &amp;KEY AMOUNT OFFSET BEFORE (AMOUNT 20) (OFFSET 0))</span>
+                      <span>(TAG &amp;KEY AMOUNT OFFSET BEFORE)</span>
                     </code>
                   </header>
                   <pre/>
