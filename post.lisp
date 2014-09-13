@@ -19,8 +19,13 @@
      (assert (find format '(:html :markdown))
              () "Format must be one of (:html :markdown)")
      (assert (or (stringp tweet) (eql tweet :off) (eql tweet NIL)))
-     (if (listp tags) (setf tags (format NIL "~{~a~^,~}" tags)))
-     (if (typep date 'local-time:timestamp) (setf date (format-tumblr-date date)))))
+     (when (and (stringp tweet) (not (search "[URL]" tweet)))
+       (warn "Appending \"[URL]\" to the end of the tweet text.")
+       (setf tweet (format NIL "~a [URL]" tweet)))
+     (when (listp tags)
+       (setf tags (format NIL "~{~a~^,~}" tags)))
+     (when (typep date 'local-time:timestamp)
+       (setf date (format-tumblr-date date)))))
 
 (defun post-wrapper (uri params &key video photo audio)
   (aget
