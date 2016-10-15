@@ -147,7 +147,7 @@
   (:method ((id fixnum) &optional blog-name)
     (assert (not (null blog-name))
             () "Blog-name required when fetching a post by ID.")
-    (make-post (blog/posts blog-name :id id))))
+    (make-post (first (blog/posts blog-name :id id)))))
 
 (defun %edit-post (post &rest args)
   (apply
