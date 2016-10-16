@@ -63,7 +63,9 @@
 (defun make-photo (result)
   (make-from-result result 'photo
     :caption (list :sizes #'(lambda (result)
-                              (mapcar #'make-photo-size (aget :sizes result))))))
+                              (list*
+                               (make-photo-size (aget :original-size result))
+                               (mapcar #'make-photo-size (aget :alt-sizes result)))))))
 
 (defun make-photo-size (result)
   (make-from-result result 'photo-size
