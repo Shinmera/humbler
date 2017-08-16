@@ -4,10 +4,6 @@
  Author: Nicolas Hafner <shinmera@tymoon.eu>
 |#
 
-(defpackage org.tymoonnext.humbler.asdf
-  (:use #:cl #:asdf))
-(in-package :org.tymoonnext.humbler.asdf)
-
 (defsystem humbler
   :name "Humbler"
   :version "0.1.8"
