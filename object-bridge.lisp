@@ -101,9 +101,17 @@
       (map-field-list :blogs :blogs #'make-blog))
     user))
 
+(defun make-trail (result)
+  (make-from-result result 'trail
+    :content :post
+    (map-field :raw-content :content-raw)
+    (map-field :root-p :is-root-item)
+    (map-field :current-p :is-current-item)
+    (map-field :blog :blog (lambda (r f) (make-blog (saget r f))))))
+
 (defun make-raw-post (result)
   (make-from-result result 'post
-    :id :blog-name :post-url :timestamp :reblog-key :liked :tags
+    :id :blog-name :post-url :timestamp :reblog-key :liked :tags :short-url :summary
     (map-field :post-type :type #'kaget)
     (map-field :date :date #'daget)
     (map-field :text-format :format #'kaget)
@@ -112,7 +120,8 @@
     (map-field :source-url :source-url #'naget)
     (map-field :source-title :source-title #'naget)
     (map-field :state :state #'kaget)
-    (map-field :note-count :note-count #'naget)))
+    (map-field :note-count :note-count #'naget)
+    (map-field-list :trail :trail #'make-trail)))
 
 ;; Here we define an extra keyword called 'submission', which is
 ;; an additionally possible STATE for a post, but isn't allowed

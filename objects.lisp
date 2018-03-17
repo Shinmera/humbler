@@ -48,12 +48,15 @@
    (timestamp :initarg :timestamp :reader timestamp)
    (date :initarg :date :accessor date)
    (text-format :initarg :text-format :accessor text-format)
+   (trail :initarg :trail :reader trail)
    (reblog-key :initarg :reblog-key :reader reblog-key)
    (tags :initarg :tags :accessor tags)
    (bookmarklet :initarg :bookmarklet :reader bookmarklet)
    (mobile :initarg :mobile :reader mobile)
    (source-url :initarg :source-url :reader source-url)
    (source-title :initarg :source-title :reader source-title)
+   (short-url :initarg :short-url :reader short-url)
+   (summary :initarg :summary :reader summary)
    (liked :initarg :liked :reader liked)
    (state :initarg :state :accessor state)
    (note-count :initarg :note-count :reader note-count)
@@ -149,12 +152,20 @@
     (format stream "~a" (width video-player)))
   video-player)
 
+(defclass trail ()
+  ((root-p :initarg :root-p :reader root-p)
+   (current-p :initarg :current-p :reader current-p)
+   (content :initarg :content :reader content)
+   (raw-content :initarg :raw-content :reader raw-content)
+   (post :initarg :post :reader trail-post)
+   (blog :initarg :blog :reader trail-blog)))
+
 (defmacro define-predicates (&rest classes)
   `(progn
      ,@(loop for class in classes
              collect `(defun ,(intern (format NIL "~a-P" class)) (thing) (typep thing ',class)))))
 
 (define-predicates
-    blog user post photo photo-size dialogue video-player
+    blog user post photo photo-size dialogue video-player trail
   video-post audio-post chat-post link-post
   quote-post photo-post text-post answer-post)

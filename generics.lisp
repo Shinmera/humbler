@@ -340,3 +340,10 @@
     (pageinate-time #'(lambda (&rest args)
                         (mapcar #'make-post (apply #'tagged tag args)))
                     before offset amount)))
+
+(defgeneric reblog-p (post)
+  (:method ((post post))
+    (let ((root (find T (trail post) :key #'root-p)))
+      (when root
+        (string/= (blog-name post)
+                  (name (trail-blog root)))))))

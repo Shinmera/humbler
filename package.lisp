@@ -80,7 +80,8 @@
    #:my-drafts
    #:my-queue
    #:my-posts
-   #:tag)
+   #:tag
+   #:reblog-p)
   ;; object-bridge.lisp
   (:export
    #:make-photo
@@ -89,6 +90,7 @@
    #:make-video-player
    #:make-blog
    #:make-user
+   #:make-trail
    #:make-post)
   ;; objects.lisp
   (:export
@@ -208,6 +210,14 @@
    #:width
    #:embed-code
 
+   #:trail
+   #:root-p
+   #:current-p
+   #:content
+   #:raw-content
+   #:trail-post
+   #:trail-blog
+
    #:blog-p
    #:user-p
    #:post-p
@@ -215,6 +225,7 @@
    #:photo-size-p
    #:dialogue-p
    #:video-player-p
+   #:trail-p
    #:video-post-p
    #:audio-post-p
    #:chat-post-p
