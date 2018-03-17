@@ -84,6 +84,7 @@
 
 (defclass link-post (post)
   ((title :initarg :title :accessor title)
+   (photos :initarg :photos :accessor photos)
    (url :initarg :url :accessor url)
    (description :initarg :description :accessor description)))
 
