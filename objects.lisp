@@ -56,6 +56,7 @@
    (source-title :initarg :source-title :reader source-title)
    (liked :initarg :liked :reader liked)
    (state :initarg :state :accessor state)
+   (note-count :initarg :note-count :reader note-count)
    ;; Posting-only props.
    (post-format :initarg :post-format :initform NIL :accessor post-format)
    (tweet :initarg :tweet :initform NIL :accessor tweet)

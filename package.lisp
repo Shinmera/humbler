@@ -140,6 +140,7 @@
    #:post-format
    #:tweet
    #:slug
+   #:note-count
    
    #:text-post
    #:title

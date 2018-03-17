@@ -111,7 +111,8 @@
     (map-field :mobile :mobile #'naget)
     (map-field :source-url :source-url #'naget)
     (map-field :source-title :source-title #'naget)
-    (map-field :state :state #'kaget)))
+    (map-field :state :state #'kaget)
+    (map-field :note-count :note-count #'naget)))
 
 ;; Here we define an extra keyword called 'submission', which is
 ;; an additionally possible STATE for a post, but isn't allowed
