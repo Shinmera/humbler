@@ -40,16 +40,17 @@
                  (if (listp fielddef) fielddef (list fielddef))
                (let ((val (funcall get result)))
                  (unless (eq val 'undefined)
-                   (setf (slot-value instance (find-symbol (string field) "HUMBLER"))
+                   (setf (slot-value instance (or (find-symbol (string field) "HUMBLER")
+                                                  (error "Shinmera fucked up and ~a is not defined." field)))
                          val)))))
     instance))
 
 (defun field-getter (field &optional (fun #'saget))
   #'(lambda (result) (funcall fun result field)))
 
-(defun field-iterator (field function)
+(defun field-iterator (field function &optional (get #'saget))
   #'(lambda (result)
-      (let ((value (saget result field)))
+      (let ((value (funcall get result field)))
         (if (eq value 'undefined)
             'undefined
             (mapcar function value)))))
@@ -57,8 +58,8 @@
 (defun map-field (to from &optional (fun #'saget))
   (list to (field-getter from fun)))
 
-(defun map-field-list (to from function)
-  (list to (field-iterator from function)))
+(defun map-field-list (to from function &optional (get #'saget))
+  (list to (field-iterator from function get)))
 
 (defun make-photo (result)
   (make-from-result result 'photo
@@ -105,8 +106,8 @@
   (make-from-result result 'trail
     :content :post
     (map-field :raw-content :content-raw)
-    (map-field :root-p :is-root-item)
-    (map-field :current-p :is-current-item)
+    (map-field :root-p :is-root-item #'naget)
+    (map-field :current-p :is-current-item #'naget)
     (map-field :blog :blog (lambda (r f) (make-blog (saget r f))))))
 
 (defun make-raw-post (result)
@@ -121,7 +122,7 @@
     (map-field :source-title :source-title #'naget)
     (map-field :state :state #'kaget)
     (map-field :note-count :note-count #'naget)
-    (map-field-list :trail :trail #'make-trail)))
+    (map-field-list :trail :trail #'make-trail #'naget)))
 
 ;; Here we define an extra keyword called 'submission', which is
 ;; an additionally possible STATE for a post, but isn't allowed
@@ -147,7 +148,7 @@
       :track-number :year :asking-name :asking-url :question :answer
       (map-field-list :photos :photos #'make-photo)
       (map-field-list :dialogue :dialogue #'make-dialogue)
-      (map-field :plays-count :plays))
+      (map-field :play-count :play-count))
     ;; Special handling for audio and video players
     ;; since they have the same field name but vastly different
     ;; results. Good job, tumblr.
