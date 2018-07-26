@@ -137,6 +137,7 @@
    #:mobile
    #:source-url
    #:source-title
+   #:summary
    #:liked
    #:state
    #:post-format
