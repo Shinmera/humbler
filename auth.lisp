@@ -6,9 +6,9 @@
 
 (in-package #:org.tymoonnext.humbler)
 
-(defvar *oauth/request-token* "http://www.tumblr.com/oauth/request_token")
-(defvar *oauth/authorize* "http://www.tumblr.com/oauth/authorize")
-(defvar *oauth/access-token* "http://www.tumblr.com/oauth/access_token")
+(defparameter *oauth/request-token* "https://www.tumblr.com/oauth/request_token")
+(defparameter *oauth/authorize* "https://www.tumblr.com/oauth/authorize")
+(defparameter *oauth/access-token* "https://www.tumblr.com/oauth/access_token")
 
 (defvar *user* NIL
   "The central user object storing a reference to whoever is currently logged in.")
