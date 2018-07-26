@@ -14,14 +14,10 @@
 (defun blog/info (blog)
   (aget :blog (request (format NIL *blog/info* blog) :parameters `(("api_key" . ,south:*oauth-api-key*)))))
 
-(defun blog/avatar (blog &key (size 64) fetch)
+(defun blog/avatar (blog &key (size 64))
   (assert (find size '(16 24 30 40 48 64 96 128 512))
           () "Size must be one of (16 24 30 40 48 64 96 128 512)")
-  (multiple-value-bind (image status headers uri) (request (format NIL *blog/avatar* blog size) :redirect (if fetch 1 NIL))
-    (declare (ignore status))
-    (if fetch
-        (values image (puri:render-uri uri NIL))
-        (aget :location headers))))
+  (request (format NIL *blog/avatar* blog size)))
 
 (defun blog/likes (blog &key (limit 20) (offset 0))
   (assert (<= 1 limit 20)

@@ -35,10 +35,7 @@ LIKES        --- The number of posts this user has liked.
                  is indeed a user.")
 
 (docf blog/avatar
-      "Returns the URL to the avatar of the blog.
-
-If FETCH is non-NIL, the avatar itself is fetched and returned as
-the first value and the avatar's URL as secondary value.
+      "Returns the avatar image as a PNG octet-sequence.
 
 SIZE  --- The size of the avatar to return, one of
           16 24 30 40 48 64 96 128 512")
