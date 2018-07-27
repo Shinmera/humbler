@@ -47,7 +47,7 @@ Reblog the last 100 photos from a blog:
 
 View the most recent text posts from a tag:
 
-    (mapcar #'body (remove-if-not #'text-post-p (tag "interesting-tag)))
+    (mapcar #'body (remove-if-not #'text-post-p (tag "interesting-tag")))
 
 Delete all your drafts:
 
