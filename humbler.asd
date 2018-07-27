@@ -6,7 +6,7 @@
 
 (defsystem humbler
   :name "Humbler"
-  :version "0.1.8"
+  :version "2.0.0"
   :license "Artistic"
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
@@ -15,6 +15,7 @@
   :serial T
   :components ((:file "package")
                (:file "toolkit")
+               (:file "auth")
                (:file "blog")
                (:file "posts")
                (:file "post")
@@ -24,9 +25,8 @@
                (:file "object-bridge")
                (:file "generics")
                (:file "deferring")
-               (:file "auth")
                (:file "documentation"))
-  :depends-on (:south
+  :depends-on (:north-core
                :yason
                :trivial-mimes
                :local-time

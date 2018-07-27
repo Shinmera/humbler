@@ -156,12 +156,12 @@
    :tweet (tweet post) :tags (tags post)
    :slug (slug post) :date (date post)
    :state (or (state post) :published)
-   :format (or (post-format post) (default-post-format *user*) :html)
+   :format (or (post-format post) (default-post-format (*user*)) :html)
    args))
 
 (defun %save-post (post main &rest args)
   (setf (slot-value post 'blog-name)
-        (or (blog-name post) (name *user*)))
+        (or (blog-name post) (name (*user*))))
   (setf (slot-value post 'id)
         (apply
          (let ((name (string (class-name (class-of post)))))
@@ -172,7 +172,7 @@
          :tweet (tweet post) :tags (tags post)
          :slug (slug post) :date (date post)
          :state (or (state post) :published)
-         :format (or (post-format post) (default-post-format *user*) :html)
+         :format (or (post-format post) (default-post-format (*user*)) :html)
          args))
   post)
 
@@ -309,31 +309,31 @@
 
 (defgeneric my-blogs ()
   (:method ()
-    (blogs *user*)))
+    (blogs (*user*))))
 
 (defgeneric my-followers (&key amount offset)
   (:method (&key (amount 20) (offset 0))
-    (followers *user* :amount amount :offset offset)))
+    (followers (*user*) :amount amount :offset offset)))
 
 (defgeneric my-likes (&key amount offset)
   (:method (&key (amount 20) (offset 0))
-    (likes *user* :amount amount :offset offset)))
+    (likes (*user*) :amount amount :offset offset)))
 
 (defgeneric my-submissions (&key amount offset)
   (:method (&key (amount 20) (offset 0))
-    (submissions *user* :amount amount :offset offset)))
+    (submissions (*user*) :amount amount :offset offset)))
 
 (defgeneric my-drafts (&key amount offset)
   (:method (&key (amount 20) (offset 0))
-    (drafts *user* :amount amount :offset offset)))
+    (drafts (*user*) :amount amount :offset offset)))
 
 (defgeneric my-queue (&key amount offset)
   (:method (&key (amount 20) (offset 0))
-    (queue *user* :amount amount :offset offset)))
+    (queue (*user*) :amount amount :offset offset)))
 
 (defgeneric my-posts (&key type tag amount offset)
   (:method (&key type tag (amount 20) (offset 0))
-    (posts *user* :type type :tag tag :amount amount :offset offset)))
+    (posts (*user*) :type type :tag tag :amount amount :offset offset)))
 
 (defgeneric tag (tag &key amount offset before)
   (:method (tag &key (amount 20) (offset 0) before)

@@ -46,7 +46,7 @@
                                   followed is-nsfw))
 
 (set-deferred user (following-count default-post-format blogs)
-  (if (blog= user *user*)
+  (if (blog= user (*user*))
       (augment user (myself))
       (error "Slot ~a not set and don't know how to retrieve it." reader)))
 

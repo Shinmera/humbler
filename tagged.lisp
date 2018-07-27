@@ -13,5 +13,5 @@
           () "Limit must be between 1 and 20 (inclusive).")
   (assert (member filter '(NIL :text :raw))
           () "Filter must be one of (NIL :text :raw)")
-  (request *tagged* :parameters (cons `("api_key" . ,south:*oauth-api-key*)
+  (request *tagged* :parameters (cons `("api_key" . ,(north:key *client*))
                                       (prepare* tag before limit filter))))

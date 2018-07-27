@@ -243,7 +243,11 @@
    #:*oauth/access-token*
    #:*oauth/authorize*
    #:*oauth/request-token*
+   #:*client*
    #:*user*
+   #:client
+   #:raw-request
+   #:request
    #:login
    #:logout)
   ;; toolkit.lisp
@@ -251,8 +255,6 @@
    #:*tumblr-datetime-format*
    #:to-keyword
    #:from-keyword
-   #:raw-request
-   #:request
    #:prepare
    #:prepare*
    #:get-unix-time
