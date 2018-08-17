@@ -11,7 +11,9 @@
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :description "A Tumblr API interface"
-  :homepage "https://github.com/Shinmera/humbler"
+  :homepage "https://Shinmera.github.io/humbler/"
+  :bug-tracker "https://github.com/Shinmera/humbler/issues"
+  :source-control (:git "https://github.com/Shinmera/humbler.git")
   :serial T
   :components ((:file "package")
                (:file "toolkit")
