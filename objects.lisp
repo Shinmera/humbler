@@ -163,7 +163,9 @@
 (defmacro define-predicates (&rest classes)
   `(progn
      ,@(loop for class in classes
-             collect `(defun ,(intern (format NIL "~a-P" class)) (thing) (typep thing ',class)))))
+             collect `(defun ,(let ((*print-case* (readtable-case *readtable*)))
+                                (intern (format NIL "~a-~a" class 'p)))
+                          (thing) (typep thing ',class)))))
 
 (define-predicates
     blog user post photo photo-size dialogue video-player trail
