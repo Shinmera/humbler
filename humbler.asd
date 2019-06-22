@@ -7,7 +7,7 @@
 (defsystem humbler
   :name "Humbler"
   :version "2.0.0"
-  :license "Artistic"
+  :license "zlib"
   :author "Nicolas Hafner <shinmera@tymoon.eu>"
   :maintainer "Nicolas Hafner <shinmera@tymoon.eu>"
   :description "A Tumblr API interface"
