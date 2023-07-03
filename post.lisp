@@ -1,9 +1,3 @@
-#|
- This file is a part of Humbler
- (c) 2014 Shirakumo http://tymoon.eu (shinmera@tymoon.eu)
- Author: Nicolas Hafner <shinmera@tymoon.eu>
-|#
-
 (in-package #:org.tymoonnext.humbler)
 
 (defvar *blog/post* "https://api.tumblr.com/v2/blog/~a.tumblr.com/post")
