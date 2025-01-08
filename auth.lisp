@@ -98,9 +98,9 @@ torn down again once the oAuth handshake is complete."
         (let ((stream (hunchentoot :send-headers)))
           (handler-case
               (progn (north:complete-authentication client verifier token)
-                     (write-sequence (flexi-streams:string-to-octets "Tumblr login done.") stream))
+                     (write-sequence (babel:string-to-octets "Tumblr login done.") stream))
             (error (e)
-              (write-sequence (flexi-streams:string-to-octets (format NIL "Tumblr login failed:~%~a" e)) stream)))
+              (write-sequence (babel:string-to-octets (format NIL "Tumblr login failed:~%~a" e)) stream)))
           (finish-output stream))
         (hunchentoot :stop server)))))
 
