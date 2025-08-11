@@ -5,9 +5,9 @@
   :author "Yukari Hafner <shinmera@tymoon.eu>"
   :maintainer "Yukari Hafner <shinmera@tymoon.eu>"
   :description "A Tumblr API interface"
-  :homepage "https://Shinmera.github.io/humbler/"
-  :bug-tracker "https://github.com/Shinmera/humbler/issues"
-  :source-control (:git "https://github.com/Shinmera/humbler.git")
+  :homepage "https://shinmera.com/docs/humbler/"
+  :bug-tracker "https://shinmera.com/project/humbler/issues"
+  :source-control (:git "https://shinmera.com/project/humbler.git")
   :serial T
   :components ((:file "package")
                (:file "toolkit")
